@@ -1,0 +1,142 @@
+.curtain-section {
+  position: relative;
+  overflow: hidden;
+  min-height: 400px;
+}
+
+/* Doors */
+.curtain-door {
+  position: absolute;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  background: #000;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  will-change: transform;
+}
+
+.curtain-door--left {
+  left: 0;
+}
+
+.curtain-door--right {
+  right: 0;
+}
+
+.curtain-door__text {
+  font-size: 36px;
+  font-weight: 900;
+  letter-spacing: 10px;
+  color: #333;
+  text-transform: uppercase;
+  user-select: none;
+}
+
+/* Revealed content */
+.curtain-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 400px;
+  will-change: transform, opacity;
+}
+
+.curtain-banner {
+  position: relative;
+  min-height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  transition: transform 0.35s;
+}
+
+.curtain-banner--men {
+  background-image: url("../assets/shop/men.png");
+}
+
+.curtain-banner--women {
+  background-image: url("../assets/shop/women.png");
+}
+
+.curtain-banner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.42) 0%, rgba(0, 0, 0, 0.58) 100%);
+  z-index: 1;
+  transition: background 0.3s;
+}
+
+.curtain-banner:hover::before {
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.5) 100%);
+}
+
+.curtain-banner__inner {
+  text-align: center;
+  z-index: 2;
+}
+
+.curtain-banner__label {
+  display: block;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 4px;
+  color: #666;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.curtain-banner__title {
+  font-size: 56px;
+  font-weight: 900;
+  letter-spacing: 12px;
+  color: #fff;
+  text-transform: uppercase;
+  margin: 0 0 20px;
+  line-height: 1;
+}
+
+.curtain-banner__cta {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 10px 28px;
+  text-transform: uppercase;
+  transition: all 0.3s;
+}
+
+.curtain-banner:hover .curtain-banner__cta {
+  border-color: #fff;
+  background: #fff;
+  color: #000;
+}
+
+@media (max-width: 768px) {
+  .curtain-content {
+    grid-template-columns: 1fr;
+  }
+
+  .curtain-banner {
+    min-height: 280px;
+  }
+
+  .curtain-banner__title {
+    font-size: 36px;
+    letter-spacing: 6px;
+  }
+
+  .curtain-door__text {
+    font-size: 24px;
+    letter-spacing: 5px;
+  }
+}

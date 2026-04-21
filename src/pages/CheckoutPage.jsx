@@ -4,6 +4,7 @@ import { ChevronLeft, Lock, Truck, ShieldCheck } from "lucide-react";
 import { useBag } from "../context/BagContext";
 import { resolveImage } from "../utils/imageResolver";
 import { buildPayfastData, PAYFAST_URL } from "../utils/payfast";
+import { supabase } from "../utils/supabase";
 import { formatSizeDisplay } from "../utils/sizeFormat";
 import "./CheckoutPage.css";
 
@@ -73,9 +74,7 @@ export default function CheckoutPage() {
     setProcessing(true);
 
     try {
-      const paymentId = `${Date.now()}${Math.floor(Math.random() * 1000)
-        .toString()
-        .padStart(3, "0")}`;
+      const paymentId = `GM-${Date.now()}`;
 
       const payfastItems = items.map((i) => ({
         name: i.product.name,
@@ -91,6 +90,46 @@ export default function CheckoutPage() {
       };
 
       const data = buildPayfastData({ items: payfastItems, customer, paymentId });
+
+      const description = items
+        .map((p) => `${p.product.brand} ${p.product.name} x${p.quantity}`)
+        .join(", ");
+
+      const { error: orderInsertError } = await supabase.from("Orders").insert([
+        {
+          order_id: paymentId,
+          first_name: customer.firstName,
+          last_name: customer.lastName,
+          email: customer.email,
+          contact: customer.phone || "",
+          item: JSON.stringify(
+            items.map((i) => ({
+              key: i.key,
+              name: i.product.name,
+              brand: i.product.brand,
+              size: i.size,
+              qty: i.quantity,
+              price: i.product.salePrice || i.product.price,
+            }))
+          ),
+          description,
+          quantity: items.reduce((sum, i) => sum + i.quantity, 0),
+          amount: String(totalPrice),
+          country: form.country,
+          street_address: form.address,
+          apartment: form.apartment || "",
+          city: form.city,
+          province: form.province,
+          postal_code: form.postalCode,
+          company: "",
+          device: navigator.userAgent,
+          status: "pending",
+        },
+      ]);
+
+      if (orderInsertError) {
+        throw orderInsertError;
+      }
 
       const pendingOrder = {
         paymentId,
@@ -111,9 +150,9 @@ export default function CheckoutPage() {
         createdAt: new Date().toISOString(),
       };
 
-      // Save pending order before redirect (client-side snapshot).
+      // Save pending order before redirect so success/cancel pages can update status.
       sessionStorage.setItem("pending_payfast_order", JSON.stringify(pendingOrder));
-      // TODO: persist pending order in DB here.
+      sessionStorage.setItem("gm_pending_order", JSON.stringify(pendingOrder));
 
       const formEl = document.createElement("form");
       formEl.method = "POST";

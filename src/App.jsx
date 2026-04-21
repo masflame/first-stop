@@ -37,7 +37,7 @@ function AppLayout() {
   return (
     <>
       <ScrollToTop />
-      {!isPaymentFlow && <Header />}
+      <Header />
       <BagSlider />
       <Routes>
         <Route path="/" element={<HomePage />} />

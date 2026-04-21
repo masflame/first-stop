@@ -2,6 +2,7 @@ import { useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, PackageCheck } from "lucide-react";
 import { useBag } from "../context/BagContext";
+import { supabase } from "../utils/supabase";
 import "./PaymentStatus.css";
 
 function formatPrice(price) {
@@ -20,7 +21,9 @@ export default function PaymentSuccess() {
 
   const pendingOrder = useMemo(() => {
     try {
-      const raw = sessionStorage.getItem("pending_payfast_order");
+      const raw =
+        sessionStorage.getItem("gm_pending_order") ||
+        sessionStorage.getItem("pending_payfast_order");
       return raw ? JSON.parse(raw) : null;
     } catch {
       return null;
@@ -28,13 +31,20 @@ export default function PaymentSuccess() {
   }, []);
 
   useEffect(() => {
-    if (!pendingOrder) return;
+    if (!pendingOrder?.paymentId) return;
     const updated = {
       ...pendingOrder,
       status: "payment_received",
       paidAt: new Date().toISOString(),
     };
+    supabase.from("Orders").update({ status: "paid" }).eq("order_id", pendingOrder.paymentId);
+    sessionStorage.setItem("gm_pending_order", JSON.stringify(updated));
     sessionStorage.setItem("pending_payfast_order", JSON.stringify(updated));
+
+    return () => {
+      sessionStorage.removeItem("gm_pending_order");
+      sessionStorage.removeItem("pending_payfast_order");
+    };
   }, [pendingOrder]);
 
   return (

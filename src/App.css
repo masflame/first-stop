@@ -1,0 +1,1083 @@
+@import url("https://fonts.googleapis.com/css2?family=Teko:wght@500;600;700&display=swap");
+
+/* Global Reset & Base Styles - First Stop */
+
+/* ── Lazy Image ── */
+.lazy-image-wrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+.lazy-image-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.lazy-image-shimmer {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+.lazy-image-wrap--loaded .lazy-image-shimmer {
+  display: none;
+}
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #000;
+  background: #fff;
+  line-height: 1.5;
+}
+
+html,
+body,
+#root {
+  max-width: 100%;
+}
+
+@media (max-width: 768px) {
+  html,
+  body,
+  #root {
+    overflow-x: hidden;
+  }
+}
+
+/* Homepage content sits above the fixed hero */
+.homepage-content {
+  position: relative;
+  z-index: 1;
+  background: #fff;
+  box-shadow: 0 -20px 60px rgba(0, 0, 0, 0.3);
+}
+
+:root {
+  --home-gutter: 20px;
+  --home-max-width: 1760px;
+}
+
+.grand-opening-banner {
+  background:
+    repeating-linear-gradient(
+      -35deg,
+      rgba(255, 255, 255, 0.03) 0,
+      rgba(255, 255, 255, 0.03) 2px,
+      transparent 2px,
+      transparent 16px
+    ),
+    linear-gradient(160deg, #0a0a0a 0%, #171717 55%, #0d0d0d 100%);
+  color: #f3f3f3;
+  padding: 76px var(--home-gutter);
+  border-top: 1px solid #2a2a2a;
+  border-bottom: 1px solid #2a2a2a;
+}
+
+.grand-opening-banner__content {
+  max-width: var(--home-max-width);
+  margin: 0 auto;
+  display: grid;
+  gap: 10px;
+  padding-left: 18px;
+  border-left: 4px solid #d8ff3f;
+}
+
+.grand-opening-banner__kicker {
+  display: inline-block;
+  font-family: "Teko", "Arial Narrow", sans-serif;
+  font-size: 30px;
+  letter-spacing: 2px;
+  font-weight: 600;
+  color: #d7d7d7;
+  margin-bottom: 0;
+  text-transform: uppercase;
+}
+
+.grand-opening-banner__title {
+  font-family: "Teko", "Arial Narrow", sans-serif;
+  font-size: clamp(46px, 8vw, 108px);
+  line-height: 0.84;
+  letter-spacing: 1px;
+  font-weight: 700;
+  margin: 0;
+  text-transform: uppercase;
+  max-width: 1040px;
+}
+
+.grand-opening-banner__text {
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: #c7c7c7;
+  max-width: 760px;
+  margin: 6px 0 20px;
+}
+
+.grand-opening-banner__cta {
+  display: inline-block;
+  background: #d8ff3f;
+  color: #111;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 12px 20px;
+  border: 1px solid #d8ff3f;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.grand-opening-banner__cta:hover {
+  background: transparent;
+  color: #d8ff3f;
+  transform: translateY(-1px);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+button {
+  font-family: inherit;
+}
+
+/* Category Banners (Home Page) */
+.category-banners {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+}
+
+.category-banner {
+  position: relative;
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  overflow: hidden;
+}
+
+.category-banner--men {
+  background: #1a1a1a;
+}
+
+.category-banner--women {
+  background: #2a2a2a;
+}
+
+.category-banner__overlay {
+  text-align: center;
+  z-index: 2;
+}
+
+.category-banner__overlay h2 {
+  font-size: 48px;
+  font-weight: 900;
+  letter-spacing: 10px;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+.category-banner:hover .category-banner__overlay h2 {
+  transform: scale(1.05);
+  transition: transform 0.3s;
+}
+
+/* Shop by Brand Tiles (Home Page) */
+.brand-tiles-section {
+  padding: 80px var(--home-gutter) 60px;
+  max-width: var(--home-max-width);
+  margin: 0 auto;
+}
+
+.brand-tiles-header {
+  margin-bottom: 40px;
+}
+
+.brand-tiles-title {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+}
+
+.brand-tiles-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 1400px) {
+  .brand-tiles-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 1024px) {
+  .brand-tiles-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.brand-tile {
+  position: relative;
+  text-decoration: none;
+  color: #fff;
+  overflow: hidden;
+  aspect-ratio: 1;
+  background: #f5f5f5;
+}
+
+.brand-tile__image-wrap {
+  position: absolute;
+  inset: 0;
+}
+
+.brand-tile__image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 20px;
+  transition: transform 0.5s ease;
+}
+
+.brand-tile:hover .brand-tile__image {
+  transform: scale(1.08);
+}
+
+.brand-tile__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0.1) 50%, transparent 100%);
+}
+
+.brand-tile__info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 24px;
+  z-index: 1;
+}
+
+.brand-tile__name {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.brand-tile__count {
+  font-size: 12px;
+  letter-spacing: 1px;
+  opacity: 0.7;
+}
+
+/* Brands Strip (Home Page) */
+.brands-strip {
+  background: #fafafa;
+  padding: 40px var(--home-gutter);
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+  position: relative;
+  z-index: 2;
+}
+
+.brands-strip__inner {
+  max-width: var(--home-max-width);
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  gap: 48px;
+  flex-wrap: wrap;
+}
+
+.brands-strip__item {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #999;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.brands-strip__item:hover {
+  color: #000;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #999;
+}
+
+@media (max-width: 768px) {
+  .brand-tiles-section {
+    padding: 48px 16px 32px;
+  }
+
+  .brand-tiles-title {
+    font-size: 20px;
+    letter-spacing: 3px;
+  }
+
+  .brand-tiles-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .brand-tile__name {
+    font-size: 14px;
+    letter-spacing: 2px;
+  }
+
+  .brand-tile__info {
+    padding: 16px;
+  }
+
+  .category-banners {
+    grid-template-columns: 1fr;
+  }
+
+  .grand-opening-banner {
+    padding: 54px 16px;
+  }
+
+  .grand-opening-banner__title {
+    letter-spacing: 0.5px;
+  }
+
+  .grand-opening-banner__content {
+    padding-left: 12px;
+    border-left-width: 3px;
+  }
+
+  .category-banner {
+    height: 200px;
+  }
+
+  .category-banner__overlay h2 {
+    font-size: 32px;
+    letter-spacing: 6px;
+  }
+
+  .brands-strip {
+    padding: 24px 16px;
+  }
+
+  .brands-strip__inner {
+    gap: 24px;
+  }
+
+  .brands-strip__item {
+    font-size: 11px;
+    letter-spacing: 2px;
+  }
+}
+
+/* ===== EDITORIAL SECTIONS ===== */
+
+.editorial {
+  position: relative;
+  overflow: hidden;
+}
+
+.editorial__inner {
+  max-width: var(--home-max-width);
+  margin: 0 auto;
+  padding: 0 var(--home-gutter);
+}
+
+.editorial__text {
+  text-align: center;
+  padding: 48px 0 0;
+}
+
+.editorial__text--left {
+  text-align: left;
+  padding: 0 0 40px;
+}
+
+.editorial__text--overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 60px 40px;
+  z-index: 2;
+}
+
+.editorial__text--light {
+  color: #fff;
+}
+
+.editorial__text--light .editorial__subtext {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.editorial__text--light .editorial__label {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.editorial__label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: #999;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.editorial__headline {
+  font-size: 48px;
+  font-weight: 900;
+  letter-spacing: 10px;
+  text-transform: uppercase;
+  line-height: 1.1;
+  margin-bottom: 16px;
+}
+
+.editorial__subtext {
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: 2px;
+  color: #666;
+  margin-bottom: 32px;
+  font-style: italic;
+}
+
+.editorial__cta {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: inherit;
+  border-bottom: 2px solid currentColor;
+  padding-bottom: 4px;
+  transition: opacity 0.3s;
+  text-decoration: none;
+}
+
+.editorial__cta:hover {
+  opacity: 0.6;
+}
+
+.editorial__img {
+  position: relative;
+  overflow: hidden;
+}
+
+.editorial__img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.8s cubic-bezier(0.25, 0, 0.25, 1);
+}
+
+.editorial__img:hover img {
+  transform: scale(1.04);
+}
+
+/* --- 1. Nike Editorial: Force of Nature --- */
+.editorial-nike {
+  padding: 100px 0;
+  background: #fff;
+}
+
+.editorial-nike__layout {
+  display: grid;
+  grid-template-columns: 1fr 1.6fr;
+  gap: 48px;
+  align-items: center;
+}
+
+.editorial-nike__text-side {
+  padding: 40px 0;
+}
+
+.editorial-nike__text-side .editorial__label {
+  margin-bottom: 16px;
+}
+
+.editorial-nike__text-side .editorial__headline {
+  font-size: 42px;
+  letter-spacing: 8px;
+  margin-bottom: 20px;
+}
+
+.editorial-nike__text-side .editorial__subtext {
+  margin-bottom: 36px;
+}
+
+.editorial-nike__grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 8px;
+}
+
+.editorial-nike__tall {
+  aspect-ratio: 3 / 4;
+}
+
+.editorial-nike__stack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.editorial-nike__stack .editorial__img {
+  flex: 1;
+  min-height: 0;
+}
+
+/* --- 2. Adidas Editorial: Street Palette --- */
+.editorial-adidas {
+  padding: 100px 0;
+  background: #f8f7f5;
+}
+
+.editorial-adidas .editorial__text {
+  padding: 0 0 48px;
+}
+
+.editorial-adidas__row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 40px;
+  align-items: end;
+}
+
+.editorial-adidas__collage {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: auto auto;
+  gap: 8px;
+}
+
+.editorial-adidas__collage .ed-adidas-wide {
+  grid-column: 1 / -1;
+  aspect-ratio: 16 / 9;
+}
+
+.editorial-adidas__cta-side {
+  display: flex;
+  align-items: flex-end;
+  padding-bottom: 8px;
+  white-space: nowrap;
+}
+
+/* --- 3. New Balance Editorial: Venture Beyond --- */
+.editorial-nb {
+  padding: 0;
+  background: #0a0a0a;
+}
+
+.editorial-nb__hero {
+  position: relative;
+  height: 85vh;
+  min-height: 500px;
+  overflow: hidden;
+}
+
+.editorial-nb__hero img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.editorial-nb__hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.75) 0%,
+    rgba(0, 0, 0, 0.2) 40%,
+    transparent 100%
+  );
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 80px 32px;
+  color: #fff;
+  text-align: center;
+}
+
+.editorial-nb__hero-overlay .editorial__headline {
+  font-size: 56px;
+  letter-spacing: 14px;
+}
+
+.editorial-nb__hero-overlay .editorial__subtext {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.editorial-nb__hero-overlay .editorial__cta {
+  color: #fff;
+}
+
+.editorial-nb__strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+}
+
+.editorial-nb__strip .editorial__img {
+  aspect-ratio: 4 / 5;
+}
+
+/* --- 4. The Culture: Multi-brand Collage --- */
+.editorial-culture {
+  padding: 100px 0;
+  background: #111;
+  color: #fff;
+}
+
+.editorial-culture__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 0 0 48px;
+}
+
+.editorial-culture__header-text {
+  max-width: 600px;
+}
+
+.editorial-culture__header-text .editorial__label {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.editorial-culture__header-text .editorial__subtext {
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 0;
+}
+
+.editorial-culture__grid {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 8px;
+  min-height: 600px;
+}
+
+.editorial-culture__grid .ed-culture-tall {
+  grid-row: 1 / 3;
+}
+
+.editorial-culture .editorial__cta {
+  color: #fff;
+}
+
+/* --- 5. Up Close: Horizontal Product Strip --- */
+.editorial-upclose {
+  padding: 80px 0;
+  background: #fafafa;
+}
+
+/* Trending Now Section Background */
+.trending-now-section {
+  background: linear-gradient(180deg, #2f4f3a 0%, #274531 100%);
+  padding: 20px 0;
+}
+
+.trending-now-section .product-grid-section {
+  padding-top: 48px;
+  padding-bottom: 48px;
+}
+
+.trending-now-section .product-grid-title {
+  color: #fff;
+}
+
+.trending-now-section .product-grid-viewall {
+  color: #fff;
+  border-color: #fff;
+}
+
+.trending-now-section .product-grid-viewall:hover {
+  background: #fff;
+  color: #000;
+}
+
+.trending-now-section .product-grid-header {
+  border-bottom-color: rgba(255, 255, 255, 0.3);
+}
+
+.trending-now-section .product-card__name,
+.trending-now-section .product-card__price,
+.trending-now-section .product-card__sale-price,
+.trending-now-section .product-card__discount {
+  color: #fff;
+}
+
+.trending-now-section .product-card__original-price {
+  color: rgba(255, 255, 255, 0.68);
+}
+
+.trending-now-section .product-card__brand-watermark {
+  color: rgba(255, 255, 255, 0.22);
+}
+
+.trending-now-section .product-card__size-tabs .size-tab,
+.trending-now-section .product-card__size-list .size-btn {
+  color: #111;
+}
+
+.editorial-upclose .editorial__text {
+  padding: 0 0 40px;
+}
+
+.editorial-upclose__scroll {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 0 32px 16px;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.editorial-upclose__scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.editorial-upclose__item {
+  flex: 0 0 300px;
+  aspect-ratio: 1;
+  overflow: hidden;
+  scroll-snap-align: start;
+  position: relative;
+}
+
+.editorial-upclose__item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.8s cubic-bezier(0.25, 0, 0.25, 1);
+}
+
+.editorial-upclose__item:hover img {
+  transform: scale(1.06);
+}
+
+.editorial-upclose__caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 16px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.6), transparent);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+/* --- Editorial Responsive --- */
+@media (max-width: 1024px) {
+  .editorial__headline {
+    font-size: 36px;
+    letter-spacing: 6px;
+  }
+
+  .editorial-adidas__collage {
+    min-height: 450px;
+  }
+
+  .editorial-culture__grid {
+    min-height: 450px;
+  }
+
+  .editorial-nb__hero-overlay .editorial__headline {
+    font-size: 40px;
+    letter-spacing: 8px;
+  }
+}
+
+@media (max-width: 768px) {
+  .homepage-content {
+    box-shadow: 0 -10px 28px rgba(0, 0, 0, 0.18);
+  }
+
+  .editorial__inner {
+    padding: 0 16px;
+  }
+
+  .editorial__headline {
+    font-size: 26px;
+    letter-spacing: 4px;
+  }
+
+  .editorial__subtext {
+    font-size: 13px;
+    letter-spacing: 1px;
+  }
+
+  /* Nike */
+  .editorial-nike {
+    padding: 60px 0;
+  }
+
+  .editorial-nike__layout {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .editorial-nike__text-side .editorial__headline {
+    font-size: 26px;
+    letter-spacing: 4px;
+  }
+
+  .editorial-nike__grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .editorial-nike__tall {
+    aspect-ratio: 4 / 5;
+  }
+
+  .editorial-nike__stack {
+    flex-direction: row;
+  }
+
+  .editorial-nike__stack .editorial__img {
+    aspect-ratio: 1;
+  }
+
+  /* Adidas */
+  .editorial-adidas {
+    padding: 60px 0;
+  }
+
+  .editorial-adidas__row {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .editorial-adidas__cta-side {
+    justify-content: center;
+  }
+
+  .editorial-adidas__collage {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    min-height: auto;
+    gap: 6px;
+  }
+
+  .editorial-adidas__collage .ed-adidas-wide {
+    grid-column: 1 / -1;
+    aspect-ratio: 16 / 10;
+  }
+
+  /* NB */
+  .editorial-nb__hero {
+    height: 60vh;
+  }
+
+  .editorial-nb__hero-overlay {
+    padding: 40px 16px;
+  }
+
+  .editorial-nb__hero-overlay .editorial__headline {
+    font-size: 28px;
+    letter-spacing: 5px;
+  }
+
+  .editorial-nb__strip {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .editorial-nb__strip .editorial__img:last-child {
+    display: none;
+  }
+
+  /* Culture */
+  .editorial-culture {
+    padding: 60px 0;
+  }
+
+  .editorial-culture__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+  }
+
+  .editorial-culture__grid {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto auto;
+    min-height: auto;
+    gap: 6px;
+  }
+
+  .editorial-culture__grid .ed-culture-tall {
+    grid-row: auto;
+    grid-column: 1 / -1;
+    aspect-ratio: 4 / 5;
+  }
+
+  .trending-now-section {
+    padding: 10px 0;
+  }
+
+  .trending-now-section .product-card__info {
+    padding: 10px 9px 9px;
+    background: rgba(21, 46, 33, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-top: none;
+  }
+
+  .trending-now-section .product-card__name,
+  .trending-now-section .product-card__price,
+  .trending-now-section .product-card__sale-price,
+  .trending-now-section .product-card__discount {
+    color: #f5f7f4 !important;
+  }
+
+  .trending-now-section .product-card__original-price {
+    color: rgba(245, 247, 244, 0.64) !important;
+  }
+
+  .trending-now-section .product-card__price {
+    font-size: 12px;
+    gap: 6px;
+  }
+
+  .trending-now-section .product-card__name {
+    font-size: 11px;
+    letter-spacing: 0.35px;
+  }
+
+  /* Up Close */
+  .editorial-upclose {
+    padding: 48px 0;
+  }
+
+  .editorial-upclose__item {
+    flex: 0 0 220px;
+  }
+}
+
+@media (max-width: 480px) {
+  .grand-opening-banner {
+    padding: 42px 14px;
+  }
+
+  .grand-opening-banner__kicker {
+    font-size: 24px;
+  }
+
+  .grand-opening-banner__title {
+    font-size: 40px;
+    line-height: 0.86;
+  }
+
+  .grand-opening-banner__text {
+    letter-spacing: 1.5px;
+  }
+
+  .brand-tiles-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .brand-tile {
+    aspect-ratio: 4 / 3;
+  }
+
+  .brand-tile__name {
+    font-size: 13px;
+    letter-spacing: 1.5px;
+  }
+
+  .editorial__headline {
+    font-size: 20px;
+    letter-spacing: 3px;
+  }
+
+  .editorial-nike__stack {
+    flex-direction: column;
+  }
+
+  .editorial-adidas__collage {
+    grid-template-columns: 1fr;
+  }
+
+  .editorial-adidas__collage .ed-adidas-wide {
+    grid-column: 1 / -1;
+  }
+
+  .editorial-nb__strip {
+    grid-template-columns: 1fr;
+  }
+
+  .editorial-nb__strip .editorial__img:last-child {
+    display: block;
+  }
+
+  .editorial-culture__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .editorial-culture__grid .ed-culture-tall {
+    grid-column: 1;
+  }
+
+  .editorial-upclose__item {
+    flex: 0 0 180px;
+  }
+}

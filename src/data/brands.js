@@ -1,0 +1,56 @@
+const brands = [
+  { letter: "#", names: ["1UP", "24 KILATES"] },
+  {
+    letter: "A",
+    names: [
+      "ADIDAS",
+      "ADIDAS BASKETBALL",
+      "ADIDAS EQUIPMENT",
+      "ADIDAS PERFORMANCE",
+      "ADIDAS SPZL",
+      "ADIDAS TERREX",
+      "ADIDAS ZX",
+      "ALPHA INDUSTRIES",
+      "ASICS",
+    ],
+  },
+  { letter: "B", names: ["BIRKENSTOCK", "BSTN"] },
+  {
+    letter: "C",
+    names: ["CARHARTT WIP", "CLARKS ORIGINALS", "CONVERSE", "CROCS"],
+  },
+  { letter: "D", names: ["DIADORA", "DICKIES", "DR. MARTENS"] },
+  { letter: "F", names: ["FILLING PIECES", "FIRST STOP"] },
+  { letter: "G", names: ["GRAMICCI"] },
+  { letter: "H", names: ["HOKA"] },
+  { letter: "J", names: ["JORDAN"] },
+  { letter: "K", names: ["KARHU", "KEEN"] },
+  { letter: "L", names: ["LACOSTE", "LEVI'S"] },
+  { letter: "M", names: ["MIZUNO", "MOLOTOW", "MONTANA", "MONTANA COLORS"] },
+  {
+    letter: "N",
+    names: [
+      "NEW BALANCE",
+      "NIKE",
+      "NIKE ACG",
+      "NIKE RUNNING",
+      "NIKE SB",
+      "NIKE SPORTSWEAR",
+      "NOCTA",
+      "THE NORTH FACE",
+    ],
+  },
+  { letter: "O", names: ["ON RUNNING"] },
+  { letter: "P", names: ["PALLADIUM", "PUMA"] },
+  { letter: "R", names: ["REEBOK"] },
+  {
+    letter: "S",
+    names: ["SALOMON", "SAUCONY", "STÜSSY", "SUICOKE"],
+  },
+  { letter: "T", names: ["TIMBERLAND"] },
+  { letter: "U", names: ["UGG", "UMBRO"] },
+  { letter: "V", names: ["VANS", "VEJA"] },
+  { letter: "Y", names: ["Y-3"] },
+];
+
+export default brands;

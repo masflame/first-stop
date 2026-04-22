@@ -1,0 +1,115 @@
+.stores-section-wrapper {
+  position: relative;
+  z-index: 2;
+  background: #fff;
+}
+
+.stores-section {
+  padding: 64px 32px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.stores-title {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  margin: 0 0 40px;
+  text-align: center;
+  color: #000;
+}
+
+.stores-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+.store-card {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  transition: transform 0.3s;
+}
+
+.store-card:hover {
+  transform: translateY(-4px);
+}
+
+.store-card__image {
+  aspect-ratio: 4/3;
+  background: #1a1a1a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.store-card__placeholder {
+  font-size: 48px;
+  font-weight: 900;
+  color: #333;
+  letter-spacing: 2px;
+}
+
+.store-card__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.store-card__name {
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin: 0 0 8px;
+  color: #000;
+}
+
+.store-card__address,
+.store-card__phone,
+.store-card__desc {
+  font-size: 12px;
+  color: #666;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.store-card__phone {
+  margin-top: 4px;
+}
+
+@media (max-width: 1024px) {
+  .stores-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .stores-section {
+    padding: 40px 16px;
+  }
+
+  .stores-title {
+    font-size: 20px;
+    letter-spacing: 3px;
+    margin-bottom: 28px;
+  }
+
+  .stores-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .store-card__image {
+    margin-bottom: 12px;
+  }
+
+  .store-card__name {
+    font-size: 13px;
+    letter-spacing: 1.6px;
+  }
+}

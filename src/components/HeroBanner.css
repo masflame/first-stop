@@ -1,0 +1,195 @@
+.hero-wrapper {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.hero {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 500px;
+  overflow: hidden;
+  will-change: transform;
+}
+
+/* ── Stacked slides ── */
+
+.hero-slide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  will-change: transform, visibility;
+}
+
+/* ── Image layers ── */
+
+.hero-images {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  will-change: transform, clip-path, opacity;
+  transform-origin: center center;
+}
+
+.hero-images--single img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.hero-images--split {
+  display: flex;
+}
+
+.hero-img-half {
+  flex: 1;
+  overflow: hidden;
+}
+
+.hero-img-half img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Dim overlay so text stays readable */
+.hero-images::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.hero-content {
+  position: relative;
+  text-align: center;
+  z-index: 2;
+  padding: 0 20px;
+}
+
+.hero-title {
+  font-size: 64px;
+  font-weight: 900;
+  letter-spacing: 10px;
+  color: #fff;
+  margin: 0 0 16px;
+  text-transform: uppercase;
+  line-height: 1;
+  will-change: transform, opacity;
+}
+
+.hero-subtitle {
+  font-size: 18px;
+  letter-spacing: 4px;
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0 0 32px;
+  text-transform: uppercase;
+  font-weight: 400;
+  will-change: transform, opacity;
+}
+
+.hero-cta {
+  display: inline-block;
+  background: #fff;
+  color: #000;
+  padding: 14px 48px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: background 0.3s, color 0.3s;
+  will-change: transform, opacity;
+}
+
+.hero-cta:hover {
+  background: #000;
+  color: #fff;
+}
+
+.hero-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.3);
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  padding: 12px;
+  z-index: 10;
+  transition: background 0.3s;
+}
+
+.hero-arrow:hover {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.hero-arrow--left {
+  left: 20px;
+}
+
+.hero-arrow--right {
+  right: 20px;
+}
+
+.hero-dots {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 10;
+}
+
+.hero-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.3s;
+}
+
+.hero-dot--active {
+  background: #fff;
+}
+
+@media (max-width: 768px) {
+  .hero-wrapper {
+    height: 350px;
+  }
+
+  .hero {
+    height: 350px;
+    min-height: 350px;
+  }
+
+  .hero-title {
+    font-size: 36px;
+    letter-spacing: 5px;
+  }
+
+  .hero-subtitle {
+    font-size: 13px;
+    letter-spacing: 2px;
+  }
+
+  .hero-cta {
+    padding: 12px 32px;
+    font-size: 11px;
+  }
+}

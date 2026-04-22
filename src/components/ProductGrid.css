@@ -1,6 +1,6 @@
 .product-grid-section {
-  padding: 48px 32px;
-  max-width: 1400px;
+  padding: 48px var(--home-gutter, 20px);
+  max-width: 1760px;
   margin: 0 auto;
 }
 
@@ -41,7 +41,7 @@
 
 .product-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 24px;
 }
 

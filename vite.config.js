@@ -6,7 +6,6 @@ export default defineConfig({
   plugins: [react()],
   assetsInclude: ['**/*.csv'],
   build: {
-    outDir: 'build',
-    emptyOutDir: false,
+    outDir: 'dist',
   },
 })

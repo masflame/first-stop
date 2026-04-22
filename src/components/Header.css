@@ -44,7 +44,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 32px;
+  padding: 24px 28px;
   background: #000;
 }
 
@@ -52,8 +52,8 @@
 .header-right {
   display: flex;
   align-items: center;
-  gap: 16px;
-  min-width: 100px;
+  gap: 20px;
+  min-width: 116px;
 }
 
 .header-right {
@@ -70,9 +70,9 @@
 
 .logo-mark {
   font-family: "Teko", "Arial Narrow", sans-serif;
-  font-size: 28px;
+  font-size: 42px;
   font-weight: 700;
-  letter-spacing: 2px;
+  letter-spacing: 3px;
   color: rgba(255, 255, 255, 0.82);
   text-transform: uppercase;
   transition: color 0.3s;
@@ -93,9 +93,9 @@
 
 .logo-coords {
   font-family: "Teko", "Arial Narrow", sans-serif;
-  font-size: 8px;
+  font-size: 11px;
   font-weight: 500;
-  letter-spacing: 2px;
+  letter-spacing: 2.4px;
   color: rgba(255, 255, 255, 0.32);
   text-transform: uppercase;
   margin-top: 3px;
@@ -107,10 +107,15 @@
   border: none;
   color: #fff;
   cursor: pointer;
-  padding: 4px;
+  padding: 7px;
   display: flex;
   align-items: center;
   position: relative;
+}
+
+.icon-btn svg {
+  width: 24px;
+  height: 24px;
 }
 
 .icon-btn:hover {
@@ -123,14 +128,14 @@
 
 .cart-count {
   position: absolute;
-  top: -4px;
-  right: -8px;
+  top: -5px;
+  right: -9px;
   background: #fff;
   color: #000;
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 700;
-  width: 16px;
-  height: 16px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -191,10 +196,10 @@
 .nav-link {
   color: #fff;
   text-decoration: none;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
-  letter-spacing: 1.5px;
-  padding: 12px 18px;
+  letter-spacing: 2px;
+  padding: 16px 20px;
   text-transform: uppercase;
   transition: color 0.2s;
 }
@@ -328,7 +333,7 @@
   }
 
   .header-main {
-    padding: 12px 16px;
+    padding: 16px 18px;
     gap: 8px;
   }
 
@@ -338,19 +343,24 @@
 
   .header-left,
   .header-right {
-    gap: 10px;
+    gap: 12px;
     min-width: 0;
     flex: 1;
   }
 
   .logo-mark {
-    font-size: 18px;
-    letter-spacing: 1.5px;
+    font-size: 26px;
+    letter-spacing: 1.8px;
   }
 
   .logo-coords {
-    font-size: 7px;
-    letter-spacing: 2px;
+    font-size: 9px;
+    letter-spacing: 2.1px;
+  }
+
+  .icon-btn svg {
+    width: 23px;
+    height: 23px;
   }
 
   .header-left,

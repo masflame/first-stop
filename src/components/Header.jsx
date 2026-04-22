@@ -68,14 +68,14 @@ export default function Header() {
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Menu"
           >
-            {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
           <button
             className="icon-btn search-btn"
             onClick={() => setSearchOpen(!searchOpen)}
             aria-label="Search"
           >
-            <Search size={20} />
+            <Search size={24} />
           </button>
         </div>
 
@@ -86,10 +86,10 @@ export default function Header() {
 
         <div className="header-right">
           <Link to="/account" className="icon-btn" aria-label="Account">
-            <User size={20} />
+            <User size={24} />
           </Link>
           <button className="icon-btn cart-btn" aria-label="Bag" onClick={() => setIsOpen(true)}>
-            <ShoppingBag size={20} />
+            <ShoppingBag size={24} />
             {totalItems > 0 && <span className="cart-count">{totalItems}</span>}
           </button>
         </div>

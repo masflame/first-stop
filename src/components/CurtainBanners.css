@@ -57,14 +57,6 @@
   transition: transform 0.35s;
 }
 
-.curtain-banner--men {
-  background-image: url("../assets/shop/men.png");
-}
-
-.curtain-banner--women {
-  background-image: url("../assets/shop/women.png");
-}
-
 .curtain-banner::before {
   content: "";
   position: absolute;

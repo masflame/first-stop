@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { resolveImage } from "../utils/imageResolver";
 import "./CurtainBanners.css";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -62,14 +63,22 @@ export default function CurtainBanners() {
 
       {/* The revealed content */}
       <div className="curtain-content" ref={contentRef}>
-        <a href="/collections/men" className="curtain-banner curtain-banner--men">
+        <a
+          href="/collections/men"
+          className="curtain-banner curtain-banner--men"
+          style={{ backgroundImage: `url(${resolveImage("shop/men.png")})` }}
+        >
           <div className="curtain-banner__inner">
             <span className="curtain-banner__label">COLLECTION</span>
             <h2 className="curtain-banner__title">MEN</h2>
             <span className="curtain-banner__cta">SHOP NOW</span>
           </div>
         </a>
-        <a href="/collections/women" className="curtain-banner curtain-banner--women">
+        <a
+          href="/collections/women"
+          className="curtain-banner curtain-banner--women"
+          style={{ backgroundImage: `url(${resolveImage("shop/women.png")})` }}
+        >
           <div className="curtain-banner__inner">
             <span className="curtain-banner__label">COLLECTION</span>
             <h2 className="curtain-banner__title">WOMEN</h2>

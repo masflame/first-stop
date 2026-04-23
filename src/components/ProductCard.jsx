@@ -114,19 +114,14 @@ export default function ProductCard({ product }) {
 
         <div className="product-card__price">
           {product.salePrice ? (
-            <>
-              <span className="product-card__price-main">
-                <span className="product-card__sale-price">
-                  {formatPrice(product.salePrice, product.currency)}
-                </span>
-                <span className="product-card__original-price">
-                  {formatPrice(product.price, product.currency)}
-                </span>
+            <span className="product-card__price-main">
+              <span className="product-card__sale-price">
+                {formatPrice(product.salePrice, product.currency)}
               </span>
-              {discountPercent && (
-                <span className="product-card__discount">-{discountPercent}%</span>
-              )}
-            </>
+              <span className="product-card__original-price">
+                {formatPrice(product.price, product.currency)}
+              </span>
+            </span>
           ) : (
             <span className="product-card__price-main">{formatPrice(product.price, product.currency)}</span>
           )}

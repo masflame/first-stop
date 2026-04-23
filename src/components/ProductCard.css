@@ -146,14 +146,12 @@
 
 .product-card__price {
   margin-top: 8px;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 700;
   color: #000;
   display: flex;
   align-items: baseline;
-  justify-content: space-between;
-  gap: 10px;
-  flex-wrap: wrap;
+  gap: 8px;
   line-height: 1.2;
 }
 

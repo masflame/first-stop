@@ -4,6 +4,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import products from "../data/products";
 import { resolveImage } from "../utils/imageResolver";
+import Seo from "../components/Seo";
 import "./ComingSoonPage.css";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -94,6 +95,11 @@ export default function ComingSoonPage() {
 
   return (
     <main className="soon-page" ref={heroRef}>
+      <Seo
+        title="Coming Soon"
+        description="Preview upcoming sneaker and streetwear drops at FIRST STOP."
+        canonicalPath="/collections/soon"
+      />
       {/* ── Hero ── */}
       <section className="soon-hero">
         <span className="soon-hero__eyebrow">UPCOMING RELEASES</span>

@@ -5,6 +5,7 @@ import ProductGrid from "../components/ProductGrid";
 import BrandShowcase from "../components/BrandShowcase";
 import CurtainBanners from "../components/CurtainBanners";
 import ScrollRevealWrap from "../components/ScrollRevealWrap";
+import Seo from "../components/Seo";
 import products from "../data/products";
 import { resolveImage } from "../utils/imageResolver";
 
@@ -144,6 +145,27 @@ export default function HomePage() {
 
   return (
     <main>
+      <Seo
+        title="Home"
+        description="Discover premium sneakers and streetwear. Shop new arrivals, curated edits, and top brands including Nike, Jordan, Adidas, and more."
+        canonicalPath="/"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              name: "FIRST STOP",
+              url: typeof window !== "undefined" ? window.location.origin : "/",
+              logo: "/favicon.svg",
+            },
+            {
+              "@type": "WebSite",
+              name: "FIRST STOP",
+              url: typeof window !== "undefined" ? window.location.origin : "/",
+            },
+          ],
+        }}
+      />
       <HeroBanner />
 
       <div className="homepage-content">

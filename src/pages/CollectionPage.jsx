@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import { useState, useMemo, useEffect } from "react";
 import ProductGrid from "../components/ProductGrid";
 import CollectionFilters from "../components/CollectionFilters";
+import Seo from "../components/Seo";
 import products from "../data/products";
 import "./CollectionPage.css";
 
@@ -177,6 +178,11 @@ export default function CollectionPage() {
 
   return (
     <main className="collection-page">
+      <Seo
+        title={meta.title}
+        description={meta.description || `Shop ${meta.title} at FIRST STOP.`}
+        canonicalPath={subcategory ? `/collections/${slug}/${subcategory}` : `/collections/${slug}`}
+      />
       <div className="collection-header">
         <h1 className="collection-title">{meta.title}</h1>
         <p className="collection-desc">{meta.description}</p>

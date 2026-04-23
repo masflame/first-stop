@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { gsap } from "gsap";
+import Seo from "../components/Seo";
 import "./RafflesPage.css";
 
 const TARGET_DATE = new Date("2026-05-05T00:00:00");
@@ -48,6 +49,11 @@ export default function RafflesPage() {
 
   return (
     <main className="raff-page" ref={pageRef}>
+      <Seo
+        title="Raffles"
+        description="Enter FIRST STOP raffles for exclusive launches and limited pairs."
+        canonicalPath="/collections/raffle"
+      />
       <section className="raff-hero">
         {/* Large watermark */}
         <div className="raff-hero__watermark" aria-hidden="true">05.05</div>

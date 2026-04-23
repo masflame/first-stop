@@ -1,9 +1,15 @@
 import brands from "../data/brands";
+import Seo from "../components/Seo";
 import "./BrandsPage.css";
 
 export default function BrandsPage() {
   return (
     <main className="brands-page">
+      <Seo
+        title="Brands"
+        description="Browse all brands at FIRST STOP including Nike, Jordan, Adidas, New Balance, ASICS, Puma, and UGG."
+        canonicalPath="/brands"
+      />
       <div className="brands-header">
         <h1 className="brands-title">BRANDS</h1>
       </div>

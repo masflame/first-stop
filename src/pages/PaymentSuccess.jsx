@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight, PackageCheck } from "lucide-react";
 import { useBag } from "../context/BagContext";
 import { supabase } from "../utils/supabase";
+import Seo from "../components/Seo";
 import "./PaymentStatus.css";
 
 function formatPrice(price) {
@@ -49,6 +50,12 @@ export default function PaymentSuccess() {
 
   return (
     <main className="payment-status payment-status--success">
+      <Seo
+        title="Payment Success"
+        description="Your payment was received and your order is now processing."
+        canonicalPath="/payment/success"
+        noindex
+      />
       <div className="payment-status__shell">
         <section className="payment-status__hero">
           <div className="payment-status__eyebrow">ORDER STATUS</div>

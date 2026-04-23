@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+Disallow: /checkout
+Disallow: /payment/
+
+Sitemap: https://first-stop.vercel.app/sitemap.xml

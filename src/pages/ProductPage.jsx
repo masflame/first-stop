@@ -6,6 +6,7 @@ import { useBag } from "../context/BagContext";
 import { resolveImage } from "../utils/imageResolver";
 import { getUnavailableSizeSet } from "../utils/sizeAvailability";
 import { formatSizeDisplay } from "../utils/sizeFormat";
+import Seo from "../components/Seo";
 import "./ProductPage.css";
 
 function formatPrice(price, currency) {
@@ -28,6 +29,7 @@ export default function ProductPage() {
   if (!product) {
     return (
       <main className="product-page">
+        <Seo title="Product Not Found" noindex canonicalPath={`/product/${id}`} />
         <div className="product-not-found">
           <h1>Product not found</h1>
           <a href="/">Back to Home</a>
@@ -43,6 +45,30 @@ export default function ProductPage() {
 
   const hasImages = imageList.length > 0;
   const requiresSize = product.sizes?.length > 0;
+  const livePrice = product.salePrice || product.price;
+  const currency = product.currency || "ZAR";
+  const firstImage = imageList[0];
+
+  const productSchema = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    image: imageList,
+    brand: {
+      "@type": "Brand",
+      name: product.brand,
+    },
+    sku: product.sku || undefined,
+    description: product.description || `${product.name} by ${product.brand}`,
+    offers: {
+      "@type": "Offer",
+      priceCurrency: currency,
+      price: Number(livePrice).toFixed(2),
+      availability: "https://schema.org/InStock",
+      url: `/product/${product.id}`,
+      itemCondition: "https://schema.org/NewCondition",
+    },
+  };
 
   const handleAddToBag = () => {
     if (requiresSize && !selectedSize) return;
@@ -51,6 +77,14 @@ export default function ProductPage() {
 
   return (
     <main className="product-page">
+      <Seo
+        title={`${product.brand} ${product.name}`}
+        description={product.description || `Shop ${product.name} by ${product.brand} at FIRST STOP.`}
+        canonicalPath={`/product/${product.id}`}
+        image={firstImage}
+        type="product"
+        jsonLd={productSchema}
+      />
       <div className="product-layout">
         {/* Images */}
         <div className="product-images">

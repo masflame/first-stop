@@ -2,6 +2,7 @@ import { useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, RefreshCcw } from "lucide-react";
 import { supabase } from "../utils/supabase";
+import Seo from "../components/Seo";
 import "./PaymentStatus.css";
 
 function formatPrice(price) {
@@ -40,6 +41,12 @@ export default function PaymentCancel() {
 
   return (
     <main className="payment-status payment-status--cancel">
+      <Seo
+        title="Payment Cancelled"
+        description="This payment attempt was cancelled. You can return to checkout and try again."
+        canonicalPath="/payment/cancel"
+        noindex
+      />
       <div className="payment-status__shell">
         <section className="payment-status__hero">
           <div className="payment-status__eyebrow">ORDER STATUS</div>

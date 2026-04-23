@@ -6,6 +6,7 @@ import { resolveImage } from "../utils/imageResolver";
 import { buildPayfastData, PAYFAST_URL } from "../utils/payfast";
 import { supabase } from "../utils/supabase";
 import { formatSizeDisplay } from "../utils/sizeFormat";
+import Seo from "../components/Seo";
 import "./CheckoutPage.css";
 
 function formatPrice(price) {
@@ -32,6 +33,7 @@ export default function CheckoutPage() {
   if (items.length === 0) {
     return (
       <main className="checkout-page">
+        <Seo title="Checkout" noindex canonicalPath="/checkout" />
         <div className="checkout-empty">
           <h1>Your bag is empty</h1>
           <Link to="/" className="checkout-empty__link">Continue Shopping</Link>
@@ -179,6 +181,12 @@ export default function CheckoutPage() {
 
   return (
     <main className="checkout-page">
+      <Seo
+        title="Checkout"
+        description="Secure checkout at FIRST STOP."
+        canonicalPath="/checkout"
+        noindex
+      />
       <div className="checkout-layout">
         {/* Left: Forms */}
         <div className="checkout-form-col">

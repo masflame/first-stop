@@ -1,4 +1,5 @@
 import { useLocation, Link } from "react-router-dom";
+import Seo from "../components/Seo";
 import "./CategoryPage.css";
 
 const categoryData = {
@@ -54,6 +55,7 @@ export default function CategoryPage() {
   if (!data) {
     return (
       <main className="category-page">
+        <Seo title="Category Not Found" noindex canonicalPath={location.pathname} />
         <div className="category-header">
           <h1 className="category-title">NOT FOUND</h1>
         </div>
@@ -63,6 +65,11 @@ export default function CategoryPage() {
 
   return (
     <main className="category-page">
+      <Seo
+        title={`${data.title} Collection`}
+        description={data.description}
+        canonicalPath={location.pathname}
+      />
       <div className="category-header">
         <h1 className="category-title">{data.title}</h1>
         <p className="category-desc">{data.description}</p>

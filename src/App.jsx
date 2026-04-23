@@ -16,6 +16,7 @@ import RafflesPage from "./pages/RafflesPage";
 import ComingSoonPage from "./pages/ComingSoonPage";
 import ScrollToTop from "./components/ScrollToTop";
 import SmoothScroll from "./components/SmoothScroll";
+import Seo from "./components/Seo";
 import "./App.css";
 
 function App() {
@@ -79,6 +80,11 @@ function AppLayout() {
 function PlaceholderPage({ title }) {
   return (
     <main style={{ minHeight: "50vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <Seo
+        title={title}
+        description="This page is coming soon on FIRST STOP."
+        noindex
+      />
       <div style={{ textAlign: "center" }}>
         <h1 style={{ fontSize: 28, fontWeight: 900, letterSpacing: 4, textTransform: "uppercase" }}>{title}</h1>
         <p style={{ color: "#999", fontSize: 14, marginTop: 12 }}>This page is coming soon.</p>

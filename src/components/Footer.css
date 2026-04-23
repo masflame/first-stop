@@ -98,11 +98,17 @@
 }
 
 .footer-col__summary {
-  list-style: none;
-}
-
-.footer-col__summary::-webkit-details-marker {
-  display: none;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: none;
+  border: none;
+  color: inherit;
+  padding: 0;
+  text-align: left;
+  cursor: default;
 }
 
 .footer-col__title {
@@ -230,10 +236,6 @@
   }
 
   .footer-col__summary {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
     padding: 14px 0;
     cursor: pointer;
   }
@@ -256,7 +258,7 @@
     transition: transform 0.2s ease, color 0.2s ease;
   }
 
-  .footer-col--collapsible[open] .footer-col__chevron {
+  .footer-col--open .footer-col__chevron {
     transform: rotate(45deg);
     color: #fff;
   }

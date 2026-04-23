@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./Footer.css";
 
@@ -47,11 +47,42 @@ const footerSections = [
 ];
 
 export default function Footer() {
+  const mobileViewport = typeof window !== "undefined" && window.innerWidth <= 768;
   const [email, setEmail] = useState("");
+  const [isMobile, setIsMobile] = useState(mobileViewport);
+  const [openSections, setOpenSections] = useState(() =>
+    Object.fromEntries(footerSections.map((section) => [section.key, !mobileViewport]))
+  );
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 768px)");
+
+    const syncViewport = (event) => {
+      const mobile = event.matches;
+      setIsMobile(mobile);
+      setOpenSections(
+        Object.fromEntries(footerSections.map((section) => [section.key, !mobile]))
+      );
+    };
+
+    syncViewport(mediaQuery);
+    mediaQuery.addEventListener("change", syncViewport);
+
+    return () => mediaQuery.removeEventListener("change", syncViewport);
+  }, []);
 
   const handleSubscribe = (e) => {
     e.preventDefault();
     setEmail("");
+  };
+
+  const toggleSection = (sectionKey) => {
+    if (!isMobile) return;
+
+    setOpenSections((currentSections) => ({
+      ...currentSections,
+      [sectionKey]: !currentSections[sectionKey],
+    }));
   };
 
   return (
@@ -83,19 +114,29 @@ export default function Footer() {
       <div className="footer-links">
         <div className="footer-links__inner">
           {footerSections.map((section) => (
-            <details key={section.key} className="footer-col footer-col--collapsible" open>
-              <summary className="footer-col__summary">
-                <h4 className="footer-col__title">{section.title}</h4>
+            <section
+              key={section.key}
+              className={`footer-col footer-col--collapsible${openSections[section.key] ? " footer-col--open" : ""}`}
+            >
+              <button
+                type="button"
+                className="footer-col__summary"
+                onClick={() => toggleSection(section.key)}
+                aria-expanded={openSections[section.key]}
+              >
+                <span className="footer-col__title">{section.title}</span>
                 <span className="footer-col__chevron" aria-hidden="true">+</span>
-              </summary>
-              <div className="footer-col__links">
+              </button>
+              {openSections[section.key] && (
+                <div className="footer-col__links">
                 {section.links.map((link) => (
                   <Link key={link.path} to={link.path} className="footer-link">
                     {link.label}
                   </Link>
                 ))}
-              </div>
-            </details>
+                </div>
+              )}
+            </section>
           ))}
         </div>
       </div>

@@ -85,6 +85,10 @@ body,
   --home-max-width: 1760px;
 }
 
+.app-header-spacer {
+  height: 0;
+}
+
 .grand-opening-banner {
   background:
     repeating-linear-gradient(
@@ -361,6 +365,14 @@ button {
 }
 
 @media (max-width: 768px) {
+  .app-header-spacer {
+    height: 73px;
+  }
+
+  .app-header-spacer--home {
+    height: 0;
+  }
+
   .brand-tiles-section {
     padding: 48px 16px 32px;
   }
@@ -1032,11 +1044,12 @@ button {
   }
 
   .brand-tiles-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
   }
 
   .brand-tile {
-    aspect-ratio: 4 / 3;
+    aspect-ratio: 1 / 1.08;
   }
 
   .brand-tile__name {
@@ -1050,11 +1063,11 @@ button {
   }
 
   .editorial-nike__stack {
-    flex-direction: column;
+    flex-direction: row;
   }
 
   .editorial-adidas__collage {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .editorial-adidas__collage .ed-adidas-wide {
@@ -1062,19 +1075,19 @@ button {
   }
 
   .editorial-nb__strip {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .editorial-nb__strip .editorial__img:last-child {
-    display: block;
+    display: none;
   }
 
   .editorial-culture__grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .editorial-culture__grid .ed-culture-tall {
-    grid-column: 1;
+    grid-column: 1 / -1;
   }
 
   .editorial-upclose__item {

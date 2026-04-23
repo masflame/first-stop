@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Search, User, ShoppingBag, Menu, X, ChevronDown } from "lucide-react";
 import { useBag } from "../context/BagContext";
@@ -38,12 +38,36 @@ const navLinks = [
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [expandedGroups, setExpandedGroups] = useState([]);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const { setIsOpen, totalItems } = useBag();
   const navigate = useNavigate();
   const location = useLocation();
   const lenisRef = useLenis();
+
+  useEffect(() => {
+    setMobileMenuOpen(false);
+    setExpandedGroups([]);
+    setSearchOpen(false);
+    setSearchQuery("");
+  }, [location.pathname]);
+
+  useEffect(() => {
+    if (!mobileMenuOpen) {
+      document.body.style.overflow = "";
+      lenisRef?.current?.start?.();
+      return undefined;
+    }
+
+    document.body.style.overflow = "hidden";
+    lenisRef?.current?.stop?.();
+
+    return () => {
+      document.body.style.overflow = "";
+      lenisRef?.current?.start?.();
+    };
+  }, [mobileMenuOpen, lenisRef]);
 
   const handleLogoClick = (e) => {
     e.preventDefault();
@@ -56,6 +80,14 @@ export default function Header() {
     } else {
       navigate("/");
     }
+  };
+
+  const toggleMobileGroup = (path) => {
+    setExpandedGroups((currentGroups) =>
+      currentGroups.includes(path)
+        ? currentGroups.filter((groupPath) => groupPath !== path)
+        : [...currentGroups, path]
+    );
   };
 
   return (
@@ -158,18 +190,50 @@ export default function Header() {
 
       {/* Mobile Navigation */}
       {mobileMenuOpen && (
-        <div className="mobile-menu">
+        <>
+          <button
+            className="mobile-menu-backdrop"
+            type="button"
+            aria-label="Close menu"
+            onClick={() => setMobileMenuOpen(false)}
+          />
+          <div className="mobile-menu" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+            <div className="mobile-menu__header">
+              <span className="mobile-menu__eyebrow">Navigation</span>
+              <button
+                className="icon-btn mobile-menu__close"
+                type="button"
+                onClick={() => setMobileMenuOpen(false)}
+                aria-label="Close menu"
+              >
+                <X size={22} />
+              </button>
+            </div>
           <nav className="mobile-nav">
             {navLinks.map((link) =>
               link.submenu ? (
-                <div key={link.path} className="mobile-nav-group">
-                  <Link
-                    to={link.path}
-                    className="mobile-nav-link"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    {link.label}
-                  </Link>
+                <div
+                  key={link.path}
+                  className={`mobile-nav-group${expandedGroups.includes(link.path) ? " mobile-nav-group--open" : ""}`}
+                >
+                  <div className="mobile-nav-group__top">
+                    <Link
+                      to={link.path}
+                      className="mobile-nav-link mobile-nav-link--parent"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      {link.label}
+                    </Link>
+                    <button
+                      type="button"
+                      className="mobile-nav-toggle"
+                      onClick={() => toggleMobileGroup(link.path)}
+                      aria-expanded={expandedGroups.includes(link.path)}
+                      aria-label={`Toggle ${link.label} menu`}
+                    >
+                      <ChevronDown size={18} />
+                    </button>
+                  </div>
                   <div className="mobile-nav-sub">
                     {link.submenu.map((sub) => (
                       <Link
@@ -195,7 +259,8 @@ export default function Header() {
               )
             )}
           </nav>
-        </div>
+          </div>
+        </>
       )}
     </header>
   );

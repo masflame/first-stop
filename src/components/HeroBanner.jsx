@@ -100,10 +100,14 @@ export default function HeroBanner() {
       const fromTitle = from.querySelector(".hero-title");
       const fromSub = from.querySelector(".hero-subtitle");
       const fromCta = from.querySelector(".hero-cta");
+      const isMobileViewport = window.matchMedia("(max-width: 768px)").matches;
+      const revealClipPath = isMobileViewport
+        ? "inset(0 50% 0 50%)"
+        : "inset(0 0 100% 0)";
 
       // Incoming image: start clipped & scaled, reveal with clip-path
       gsap.set(toImg, {
-        clipPath: "inset(0 0 100% 0)",
+        clipPath: revealClipPath,
         scale: 1.12,
         opacity: 1,
       });

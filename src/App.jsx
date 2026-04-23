@@ -38,6 +38,10 @@ function AppLayout() {
     <>
       <ScrollToTop />
       <Header />
+      <div
+        className={`app-header-spacer${pathname === "/" ? " app-header-spacer--home" : ""}`}
+        aria-hidden="true"
+      />
       <BagSlider />
       <Routes>
         <Route path="/" element={<HomePage />} />

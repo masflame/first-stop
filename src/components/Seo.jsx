@@ -1,21 +1,11 @@
 import { Helmet } from "react-helmet-async";
-
-const SITE_NAME = "FIRST STOP";
-const DEFAULT_DESCRIPTION = "Shop premium sneakers and streetwear from Nike, Jordan, Adidas, New Balance, ASICS, Puma, and UGG.";
-const DEFAULT_OG_IMAGE = "/favicon.svg";
-
-function toAbsoluteUrl(pathOrUrl) {
-  if (!pathOrUrl) return undefined;
-  if (/^https?:\/\//i.test(pathOrUrl)) return pathOrUrl;
-  if (typeof window === "undefined") return pathOrUrl;
-  return new URL(pathOrUrl, window.location.origin).toString();
-}
-
-function getCanonicalUrl(canonicalPath) {
-  if (typeof window === "undefined") return canonicalPath;
-  const path = canonicalPath || `${window.location.pathname}${window.location.search}`;
-  return new URL(path, window.location.origin).toString();
-}
+import {
+  DEFAULT_DESCRIPTION,
+  DEFAULT_OG_IMAGE,
+  SITE_NAME,
+  getCanonicalUrl,
+  toAbsoluteUrl,
+} from "../utils/seo";
 
 export default function Seo({
   title,

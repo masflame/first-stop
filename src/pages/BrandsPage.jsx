@@ -1,5 +1,6 @@
 import brands from "../data/brands";
 import Seo from "../components/Seo";
+import { buildBreadcrumbSchema } from "../utils/seo";
 import "./BrandsPage.css";
 
 export default function BrandsPage() {
@@ -7,8 +8,12 @@ export default function BrandsPage() {
     <main className="brands-page">
       <Seo
         title="Brands"
-        description="Browse all brands at FIRST STOP including Nike, Jordan, Adidas, New Balance, ASICS, Puma, and UGG."
+        description="Browse sneaker and streetwear brands available online in South Africa at FIRST STOP, including Nike, Jordan, Adidas, New Balance, ASICS, Puma, and UGG."
         canonicalPath="/brands"
+        jsonLd={buildBreadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "Brands", path: "/brands" },
+        ])}
       />
       <div className="brands-header">
         <h1 className="brands-title">BRANDS</h1>

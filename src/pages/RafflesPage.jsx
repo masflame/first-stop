@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import Seo from "../components/Seo";
+import { buildBreadcrumbSchema } from "../utils/seo";
 import "./RafflesPage.css";
 
 const TARGET_DATE = new Date("2026-05-05T00:00:00");
@@ -51,8 +52,12 @@ export default function RafflesPage() {
     <main className="raff-page" ref={pageRef}>
       <Seo
         title="Raffles"
-        description="Enter FIRST STOP raffles for exclusive launches and limited pairs."
+        description="Enter FIRST STOP raffles for exclusive sneaker launches and limited pairs online in South Africa."
         canonicalPath="/collections/raffle"
+        jsonLd={buildBreadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "Raffles", path: "/collections/raffle" },
+        ])}
       />
       <section className="raff-hero">
         {/* Large watermark */}

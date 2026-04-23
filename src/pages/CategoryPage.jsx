@@ -1,5 +1,6 @@
 import { useLocation, Link } from "react-router-dom";
 import Seo from "../components/Seo";
+import { buildBreadcrumbSchema } from "../utils/seo";
 import "./CategoryPage.css";
 
 const categoryData = {
@@ -66,9 +67,13 @@ export default function CategoryPage() {
   return (
     <main className="category-page">
       <Seo
-        title={`${data.title} Collection`}
-        description={data.description}
+        title={`${data.title} Sneakers, Clothing & Accessories`}
+        description={`Shop ${data.title.toLowerCase()} sneakers, streetwear clothing, and accessories online in South Africa at FIRST STOP. ${data.description}`}
         canonicalPath={location.pathname}
+        jsonLd={buildBreadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: data.title, path: location.pathname },
+        ])}
       />
       <div className="category-header">
         <h1 className="category-title">{data.title}</h1>

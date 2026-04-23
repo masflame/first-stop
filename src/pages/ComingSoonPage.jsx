@@ -5,6 +5,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import products from "../data/products";
 import { resolveImage } from "../utils/imageResolver";
 import Seo from "../components/Seo";
+import { buildBreadcrumbSchema } from "../utils/seo";
 import "./ComingSoonPage.css";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -97,8 +98,12 @@ export default function ComingSoonPage() {
     <main className="soon-page" ref={heroRef}>
       <Seo
         title="Coming Soon"
-        description="Preview upcoming sneaker and streetwear drops at FIRST STOP."
+        description="Preview upcoming sneaker and streetwear drops launching soon online in South Africa at FIRST STOP."
         canonicalPath="/collections/soon"
+        jsonLd={buildBreadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "Coming Soon", path: "/collections/soon" },
+        ])}
       />
       {/* ── Hero ── */}
       <section className="soon-hero">

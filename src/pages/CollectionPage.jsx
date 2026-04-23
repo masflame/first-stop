@@ -4,6 +4,7 @@ import ProductGrid from "../components/ProductGrid";
 import CollectionFilters from "../components/CollectionFilters";
 import Seo from "../components/Seo";
 import products from "../data/products";
+import { buildBreadcrumbSchema, buildItemListSchema } from "../utils/seo";
 import "./CollectionPage.css";
 
 const PAGE_SIZE = 48;
@@ -176,12 +177,27 @@ export default function CollectionPage() {
     setSelectedCategories([]);
   }
 
+  const canonicalPath = subcategory ? `/collections/${slug}/${subcategory}` : `/collections/${slug}`;
+  const collectionSchemas = [
+    buildBreadcrumbSchema([
+      { name: "Home", path: "/" },
+      { name: "Collections", path: "/collections/new" },
+      { name: meta.title, path: canonicalPath },
+    ]),
+    buildItemListSchema(filtered.slice(0, 12), meta.title, canonicalPath),
+  ];
+
   return (
     <main className="collection-page">
       <Seo
         title={meta.title}
-        description={meta.description || `Shop ${meta.title} at FIRST STOP.`}
-        canonicalPath={subcategory ? `/collections/${slug}/${subcategory}` : `/collections/${slug}`}
+        description={
+          meta.description
+            ? `${meta.description} Shop ${meta.title.toLowerCase()} online in South Africa at FIRST STOP.`
+            : `Shop ${meta.title.toLowerCase()} online in South Africa at FIRST STOP.`
+        }
+        canonicalPath={canonicalPath}
+        jsonLd={collectionSchemas}
       />
       <div className="collection-header">
         <h1 className="collection-title">{meta.title}</h1>

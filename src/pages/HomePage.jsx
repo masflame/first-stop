@@ -8,6 +8,7 @@ import ScrollRevealWrap from "../components/ScrollRevealWrap";
 import Seo from "../components/Seo";
 import products from "../data/products";
 import { resolveImage } from "../utils/imageResolver";
+import { buildBreadcrumbSchema, buildItemListSchema, getCanonicalUrl } from "../utils/seo";
 
 // Nike editorial images
 import nikeGirlAF1 from "../assets/display/nike-girl-holding blue af1.jpg";
@@ -143,28 +144,31 @@ export default function HomePage() {
     };
   }).filter((b) => b.image);
 
+  const homeSchemas = [
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      name: "FIRST STOP",
+      url: getCanonicalUrl("/"),
+      logo: getCanonicalUrl("/favicon.svg"),
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      name: "FIRST STOP",
+      url: getCanonicalUrl("/"),
+    },
+    buildBreadcrumbSchema([{ name: "Home", path: "/" }]),
+    buildItemListSchema(newArrivalsSlice.slice(0, 8), "New Arrivals", "/"),
+  ];
+
   return (
     <main>
       <Seo
         title="Home"
-        description="Discover premium sneakers and streetwear. Shop new arrivals, curated edits, and top brands including Nike, Jordan, Adidas, and more."
+        description="Shop premium sneakers and streetwear online in South Africa. Discover Nike, Jordan, Adidas, New Balance, ASICS, Puma, UGG, new arrivals, and curated drops at FIRST STOP."
         canonicalPath="/"
-        jsonLd={{
-          "@context": "https://schema.org",
-          "@graph": [
-            {
-              "@type": "Organization",
-              name: "FIRST STOP",
-              url: typeof window !== "undefined" ? window.location.origin : "/",
-              logo: "/favicon.svg",
-            },
-            {
-              "@type": "WebSite",
-              name: "FIRST STOP",
-              url: typeof window !== "undefined" ? window.location.origin : "/",
-            },
-          ],
-        }}
+        jsonLd={homeSchemas}
       />
       <HeroBanner />
 

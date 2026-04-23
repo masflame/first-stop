@@ -7,6 +7,7 @@ import { resolveImage } from "../utils/imageResolver";
 import { getUnavailableSizeSet } from "../utils/sizeAvailability";
 import { formatSizeDisplay } from "../utils/sizeFormat";
 import Seo from "../components/Seo";
+import { buildBreadcrumbSchema } from "../utils/seo";
 import "./ProductPage.css";
 
 function formatPrice(price, currency) {
@@ -48,27 +49,37 @@ export default function ProductPage() {
   const livePrice = product.salePrice || product.price;
   const currency = product.currency || "ZAR";
   const firstImage = imageList[0];
+  const primaryCollectionPath = `/collections/${String(product.brand || "").toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
 
-  const productSchema = {
-    "@context": "https://schema.org",
-    "@type": "Product",
-    name: product.name,
-    image: imageList,
-    brand: {
-      "@type": "Brand",
-      name: product.brand,
+  const productSchema = [
+    {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      name: product.name,
+      image: imageList,
+      brand: {
+        "@type": "Brand",
+        name: product.brand,
+      },
+      sku: product.sku || undefined,
+      description:
+        product.description ||
+        `Shop ${product.name} by ${product.brand} online in South Africa at FIRST STOP.`,
+      offers: {
+        "@type": "Offer",
+        priceCurrency: currency,
+        price: Number(livePrice).toFixed(2),
+        availability: "https://schema.org/InStock",
+        url: `/product/${product.id}`,
+        itemCondition: "https://schema.org/NewCondition",
+      },
     },
-    sku: product.sku || undefined,
-    description: product.description || `${product.name} by ${product.brand}`,
-    offers: {
-      "@type": "Offer",
-      priceCurrency: currency,
-      price: Number(livePrice).toFixed(2),
-      availability: "https://schema.org/InStock",
-      url: `/product/${product.id}`,
-      itemCondition: "https://schema.org/NewCondition",
-    },
-  };
+    buildBreadcrumbSchema([
+      { name: "Home", path: "/" },
+      { name: product.brand, path: primaryCollectionPath },
+      { name: product.name, path: `/product/${product.id}` },
+    ]),
+  ];
 
   const handleAddToBag = () => {
     if (requiresSize && !selectedSize) return;
@@ -79,7 +90,10 @@ export default function ProductPage() {
     <main className="product-page">
       <Seo
         title={`${product.brand} ${product.name}`}
-        description={product.description || `Shop ${product.name} by ${product.brand} at FIRST STOP.`}
+        description={
+          product.description ||
+          `Shop ${product.name} by ${product.brand} online in South Africa at FIRST STOP.`
+        }
         canonicalPath={`/product/${product.id}`}
         image={firstImage}
         type="product"

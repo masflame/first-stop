@@ -1,10 +1,10 @@
-import pumaProducts from "./pumaProducts";
-import newbalanceProducts from "./newbalanceProducts";
-import nikeProducts from "./nikeProducts";
-import jordanProducts from "./jordanProducts";
-import asicsProducts from "./asicsProducts";
-import adidasProducts from "./adidasProducts";
-import uggProducts from "./uggProducts";
+import pumaProducts from "./pumaProducts.js";
+import newbalanceProducts from "./newbalanceProducts.js";
+import nikeProducts from "./nikeProducts.js";
+import jordanProducts from "./jordanProducts.js";
+import asicsProducts from "./asicsProducts.js";
+import adidasProducts from "./adidasProducts.js";
+import uggProducts from "./uggProducts.js";
 
 const rawProducts = [
   ...pumaProducts,

@@ -147,7 +147,7 @@ export default function HomePage() {
       <HeroBanner />
 
       <div className="homepage-content">
-      <section className="grand-opening-banner">
+      {/* <section className="grand-opening-banner">
         <div className="grand-opening-banner__content">
           <span className="grand-opening-banner__kicker">The Edit.</span>
           <h2 className="grand-opening-banner__title">The Streetwear Edit.</h2>
@@ -158,7 +158,7 @@ export default function HomePage() {
             SHOP THE SELECTION
           </Link>
         </div>
-      </section>
+      </section> */}
 
       <ProductGrid
         products={saleHighlightsSlice}

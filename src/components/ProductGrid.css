@@ -94,7 +94,7 @@
   }
 
   .product-grid--mobile-row .product-card {
-    flex: 0 0 min(72vw, 252px);
+    flex: 0 0 calc((100vw - 56px) / 2.25);
     scroll-snap-align: start;
   }
 }
@@ -115,6 +115,6 @@
   }
 
   .product-grid--mobile-row .product-card {
-    flex-basis: 78vw;
+    flex: 0 0 calc((100vw - 52px) / 2.25);
   }
 }

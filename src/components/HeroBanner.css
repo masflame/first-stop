@@ -170,15 +170,7 @@
 
 @media (max-width: 768px) {
   .hero-wrapper {
-    height: calc(100dvh + 120px);
-    min-height: 560px;
-  }
-
-  .hero {
-    position: sticky;
-    top: 73px;
-    height: calc(100dvh - 73px);
-    min-height: 420px;
+    height: 100dvh;
   }
 
   .hero-title {
@@ -198,7 +190,7 @@
 
   .hero-arrow {
     top: auto;
-    bottom: 74px;
+    bottom: 80px;
     transform: none;
     padding: 10px;
   }
@@ -212,16 +204,6 @@
   }
 
   .hero-dots {
-    bottom: 24px;
-  }
-}
-
-@media (max-width: 480px) {
-  .hero-wrapper {
-    min-height: 520px;
-  }
-
-  .hero {
-    min-height: 390px;
+    bottom: 28px;
   }
 }

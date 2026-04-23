@@ -45,7 +45,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 24px 28px;
+  padding: 12px 28px;
   background: #fff;
 }
 
@@ -71,7 +71,7 @@
 
 .logo-mark {
   font-family: "Teko", "Arial Narrow", sans-serif;
-  font-size: 42px;
+  font-size: 32px;
   font-weight: 700;
   letter-spacing: 3px;
   color: rgba(0, 0, 0, 0.82);
@@ -99,7 +99,7 @@
   letter-spacing: 2.4px;
   color: rgba(0, 0, 0, 0.32);
   text-transform: uppercase;
-  margin-top: 3px;
+  margin-top: 1px;
   line-height: 1;
 }
 

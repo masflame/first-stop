@@ -396,7 +396,7 @@ button {
   }
 
   .brand-tile {
-    flex: 0 0 min(70vw, 250px);
+    flex: 0 0 calc((100vw - 56px) / 2.25);
     scroll-snap-align: start;
   }
 
@@ -1075,7 +1075,7 @@ button {
   }
 
   .brand-tile {
-    flex-basis: 78vw;
+    flex: 0 0 calc((100vw - 52px) / 2.25);
     aspect-ratio: 1 / 1.08;
   }
 

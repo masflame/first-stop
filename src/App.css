@@ -383,8 +383,21 @@ button {
   }
 
   .brand-tiles-grid {
-    grid-template-columns: repeat(2, 1fr);
+    display: flex;
+    overflow-x: auto;
     gap: 12px;
+    padding-bottom: 6px;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+  }
+
+  .brand-tiles-grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .brand-tile {
+    flex: 0 0 min(70vw, 250px);
+    scroll-snap-align: start;
   }
 
   .brand-tile__name {
@@ -427,7 +440,21 @@ button {
   }
 
   .brands-strip__inner {
-    gap: 24px;
+    justify-content: flex-start;
+    gap: 18px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 2px;
+    scrollbar-width: none;
+  }
+
+  .brands-strip__inner::-webkit-scrollbar {
+    display: none;
+  }
+
+  .brands-strip__item {
+    flex: 0 0 auto;
+    padding-right: 2px;
   }
 
   .brands-strip__item {
@@ -1044,11 +1071,11 @@ button {
   }
 
   .brand-tiles-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 10px;
   }
 
   .brand-tile {
+    flex-basis: 78vw;
     aspect-ratio: 1 / 1.08;
   }
 

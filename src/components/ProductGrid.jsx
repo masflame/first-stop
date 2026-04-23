@@ -2,7 +2,7 @@ import ProductCard from "./ProductCard";
 import { useScrollReveal } from "../hooks/useScrollEffects";
 import "./ProductGrid.css";
 
-export default function ProductGrid({ products, title, viewAllLink }) {
+export default function ProductGrid({ products, title, viewAllLink, mobileLayout = "grid" }) {
   const gridRef = useScrollReveal(".product-card", { stagger: 0.08, y: 50 });
   const headerRef = useScrollReveal(".reveal-item", { y: 30, duration: 0.6 });
 
@@ -18,7 +18,10 @@ export default function ProductGrid({ products, title, viewAllLink }) {
           )}
         </div>
       )}
-      <div className="product-grid" ref={gridRef}>
+      <div
+        className={`product-grid${mobileLayout === "row" ? " product-grid--mobile-row" : ""}`}
+        ref={gridRef}
+      >
         {products.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}

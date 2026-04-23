@@ -164,12 +164,14 @@ export default function HomePage() {
         products={saleHighlightsSlice}
         title="THE STREETWEAR SELECTION"
         viewAllLink="/collections/sale"
+        mobileLayout="row"
       />
 
       <ProductGrid
         products={newArrivalsSlice}
         title="NEW ARRIVALS"
         viewAllLink="/collections/new"
+        mobileLayout="row"
       />
 
       {/* ── EDITORIAL 1: Nike - Force of Nature ── */}
@@ -249,6 +251,7 @@ export default function HomePage() {
         products={bestSellersSlice}
         title="BEST SELLERS"
         viewAllLink="/collections/all"
+        mobileLayout="row"
       />
 
       {/* ── EDITORIAL 3: New Balance - Venture Beyond ── */}
@@ -318,6 +321,7 @@ export default function HomePage() {
           products={featuredJordans}
           title="FEATURED JORDANS"
           viewAllLink="/collections/jordan"
+          mobileLayout="row"
         />
       )}
 
@@ -401,6 +405,7 @@ export default function HomePage() {
             products={trendingSlice}
             title="TRENDING NOW"
             viewAllLink="/collections/new"
+            mobileLayout="row"
           />
         </div>
       )}

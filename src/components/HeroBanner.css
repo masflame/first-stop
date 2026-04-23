@@ -170,12 +170,15 @@
 
 @media (max-width: 768px) {
   .hero-wrapper {
-    height: 350px;
+    height: calc(100dvh + 120px);
+    min-height: 560px;
   }
 
   .hero {
-    height: 350px;
-    min-height: 350px;
+    position: sticky;
+    top: 73px;
+    height: calc(100dvh - 73px);
+    min-height: 420px;
   }
 
   .hero-title {
@@ -191,5 +194,34 @@
   .hero-cta {
     padding: 12px 32px;
     font-size: 11px;
+  }
+
+  .hero-arrow {
+    top: auto;
+    bottom: 74px;
+    transform: none;
+    padding: 10px;
+  }
+
+  .hero-arrow--left {
+    left: 14px;
+  }
+
+  .hero-arrow--right {
+    right: 14px;
+  }
+
+  .hero-dots {
+    bottom: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-wrapper {
+    min-height: 520px;
+  }
+
+  .hero {
+    min-height: 390px;
   }
 }

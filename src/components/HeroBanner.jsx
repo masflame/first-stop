@@ -17,8 +17,8 @@ gsap.registerPlugin(ScrollTrigger);
 const slides = [
   {
     id: 1,
-    title: "GRAND OPENING SALE",
-    subtitle: "MASSIVE MARKDOWNS ACROSS ALL CATEGORIES",
+    title: "SEASONAL SELECTION",
+    subtitle: "CURATED PIECES. LIMITED TIME PRICING.",
     cta: "SHOP SALE",
     link: "/collections/sale",
     bgColor: "#1a3a1a",

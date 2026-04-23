@@ -170,10 +170,16 @@
 
 @media (max-width: 768px) {
   .hero-wrapper {
-    height: clamp(420px, 72dvh, 560px);
+    position: relative;
+    height: clamp(360px, 58dvh, 500px);
   }
 
   .hero {
+    position: fixed;
+    top: 73px;
+    left: 0;
+    right: 0;
+    height: clamp(360px, 58dvh, 500px);
     min-height: 0;
   }
 

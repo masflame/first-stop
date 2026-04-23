@@ -3,7 +3,30 @@ import md5 from "md5";
 const MERCHANT_ID = import.meta.env.VITE_PAYFAST_MERCHANT_ID;
 const MERCHANT_KEY = import.meta.env.VITE_PAYFAST_MERCHANT_KEY;
 const PASSPHRASE = import.meta.env.VITE_PAYFAST_PASSPHRASE;
-const PAYFAST_URL = import.meta.env.VITE_PAYFAST_URL || "https://sandbox.payfast.co.za/eng/process";
+const SANDBOX_PAYFAST_URL = "https://sandbox.payfast.co.za/eng/process";
+const LIVE_PAYFAST_URL = "https://www.payfast.co.za/eng/process";
+
+function resolvePayfastUrl() {
+  const configured = import.meta.env.VITE_PAYFAST_URL;
+  const isSandboxMerchant = /^100\d+$/u.test(String(MERCHANT_ID || "").trim());
+
+  if (!configured) {
+    return isSandboxMerchant ? SANDBOX_PAYFAST_URL : LIVE_PAYFAST_URL;
+  }
+
+  const isSandboxUrl = /sandbox\.payfast\.co\.za/iu.test(configured);
+  if (isSandboxMerchant && !isSandboxUrl) {
+    return SANDBOX_PAYFAST_URL;
+  }
+
+  if (!isSandboxMerchant && isSandboxUrl) {
+    return LIVE_PAYFAST_URL;
+  }
+
+  return configured;
+}
+
+const PAYFAST_URL = resolvePayfastUrl();
 const NOTIFY_URL = import.meta.env.VITE_PAYFAST_NOTIFY_URL;
 
 function phpUrlencode(str) {
@@ -34,6 +57,10 @@ function generateSignature(data) {
 }
 
 export function buildPayfastData({ items, customer, paymentId }) {
+  if (!MERCHANT_ID || !MERCHANT_KEY) {
+    throw new Error("Missing PayFast merchant credentials. Set VITE_PAYFAST_MERCHANT_ID and VITE_PAYFAST_MERCHANT_KEY.");
+  }
+
   const amount = items.reduce((sum, i) => sum + i.price * i.qty, 0);
   const itemName = items.length === 1 ? items[0].name : `Order #${paymentId} (${items.length} items)`;
   const itemDescription = items

@@ -27,8 +27,11 @@ export function resolveImage(path) {
     .map((seg) => encodeURIComponent(seg))
     .join("/");
 
-  // Migrate heavy shop assets to Supabase storage while keeping local paths for smaller assets.
-  const storageBase = import.meta.env.VITE_STORAGE_PROJECT_URL;
+  // Prefer dedicated storage project URL, but fall back to primary Supabase project URLs.
+  const storageBase =
+    import.meta.env.VITE_STORAGE_PROJECT_URL ||
+    import.meta.env.VITE_PROJECT_URL ||
+    import.meta.env.VITE_SUPABASE_URL;
   const storageBucket = import.meta.env.VITE_STORAGE_BUCKET || "products";
   if (storageBase && path.startsWith("shop/")) {
     const storageEncoded = toStorageSafePath(path)

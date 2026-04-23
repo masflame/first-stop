@@ -199,9 +199,9 @@
   }
 
   .hero-arrow {
-    top: auto;
-    bottom: 80px;
-    transform: none;
+    top: 50%;
+    transform: translateY(-50%);
+    bottom: auto;
     padding: 10px;
   }
 

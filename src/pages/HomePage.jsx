@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import HeroBanner from "../components/HeroBanner";
 import ProductGrid from "../components/ProductGrid";
-import StoreLocations from "../components/StoreLocations";
+// import StoreLocations from "../components/StoreLocations";
 import BrandShowcase from "../components/BrandShowcase";
 import CurtainBanners from "../components/CurtainBanners";
 import ScrollRevealWrap from "../components/ScrollRevealWrap";
@@ -425,7 +425,7 @@ export default function HomePage() {
         </section>
       </ScrollRevealWrap>
 
-      <StoreLocations />
+      {/* <StoreLocations /> */}
       </div>
     </main>
   );

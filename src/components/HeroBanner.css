@@ -170,7 +170,11 @@
 
 @media (max-width: 768px) {
   .hero-wrapper {
-    height: 100dvh;
+    height: clamp(420px, 72dvh, 560px);
+  }
+
+  .hero {
+    min-height: 0;
   }
 
   .hero-title {

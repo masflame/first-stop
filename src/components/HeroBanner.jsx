@@ -185,6 +185,7 @@ export default function HeroBanner() {
   // Scroll parallax
   useEffect(() => {
     if (!heroRef.current) return;
+    if (window.matchMedia("(max-width: 768px)").matches) return;
     const ctx = gsap.context(() => {
       gsap.to(heroRef.current, {
         scale: 1.08,

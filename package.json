@@ -13,6 +13,7 @@
     "upload:shop:dry": "node scripts/upload-shop-to-supabase.mjs --dry-run --limit 50"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.104.1",
     "gsap": "^3.14.2",
     "lenis": "^1.3.21",
     "lucide-react": "^1.7.0",

@@ -17,6 +17,7 @@ import ComingSoonPage from "./pages/ComingSoonPage";
 import ScrollToTop from "./components/ScrollToTop";
 import SmoothScroll from "./components/SmoothScroll";
 import Seo from "./components/Seo";
+import useVisitorTracker from "./hooks/useVisitorTracker";
 import "./App.css";
 
 function App() {
@@ -32,6 +33,8 @@ function App() {
 }
 
 function AppLayout() {
+  useVisitorTracker();
+
   const { pathname } = useLocation();
   const isPaymentFlow = pathname.startsWith("/payment/");
 

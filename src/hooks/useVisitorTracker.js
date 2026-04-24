@@ -2,21 +2,15 @@ import { useEffect, useRef, useCallback } from "react";
 import { useLocation } from "react-router-dom";
 import { getVisitorId, getSessionId } from "../utils/fingerprint";
 
-const PRIMARY_VISITOR_TABLE = "Shoedistrict_Visitors";
-const FALLBACK_VISITOR_TABLE = "Visitors";
-let activeVisitorTable = PRIMARY_VISITOR_TABLE;
-const supabaseUrl = import.meta.env.VITE_PROJECT_URL || import.meta.env.VITE_SUPABASE_URL;
-const supabaseKey = import.meta.env.VITE_PUBLISHABLE_KEY || import.meta.env.VITE_SUPABASE_ANON_KEY;
-
-function getVisitorTablesInOrder() {
-  return [activeVisitorTable, PRIMARY_VISITOR_TABLE, FALLBACK_VISITOR_TABLE].filter(
-    (tableName, index, tables) => tableName && tables.indexOf(tableName) === index,
-  );
-}
-
-function isMissingVisitorTableError(error) {
-  return error?.status === 404 && error?.details?.code === "PGRST205";
-}
+const VISITOR_TABLE = "ShoeDistrict_Visitors";
+const supabaseUrl =
+  import.meta.env.VITE_STORAGE_PROJECT_URL ||
+  import.meta.env.VITE_PROJECT_URL ||
+  import.meta.env.VITE_SUPABASE_URL;
+const supabaseKey =
+  import.meta.env.VITE_STORAGE_PUBLISHABLE_KEY ||
+  import.meta.env.VITE_PUBLISHABLE_KEY ||
+  import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 function getVisitorEndpoint(tableName, query = {}) {
   if (!supabaseUrl) return null;
@@ -104,27 +98,11 @@ async function requestVisitorTable(tableName, { method = "GET", query, body, pre
 }
 
 async function requestVisitors(options) {
-  let lastResult = { data: null, error: null, tableName: activeVisitorTable };
-
-  for (const tableName of getVisitorTablesInOrder()) {
-    const result = await requestVisitorTable(tableName, options);
-    lastResult = result;
-
-    if (!result.error) {
-      activeVisitorTable = tableName;
-      return result;
-    }
-
-    if (!isMissingVisitorTableError(result.error)) {
-      return result;
-    }
-  }
-
-  return lastResult;
+  return requestVisitorTable(VISITOR_TABLE, options);
 }
 
 async function fetchVisitor(visitorId) {
-    const { data, error } = await requestVisitors({
+  const { data, error } = await requestVisitors({
     query: {
       visitor_id: `eq.${visitorId}`,
       select: "*",

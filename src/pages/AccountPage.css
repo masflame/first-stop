@@ -1,0 +1,129 @@
+.account-page {
+  min-height: 70vh;
+  display: flex;
+  justify-content: center;
+  padding: 36px 18px 56px;
+  background: #f8f8f8;
+}
+
+.account-shell {
+  width: 100%;
+  max-width: 560px;
+}
+
+.account-title {
+  margin: 0 0 18px;
+  font-size: 30px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.account-card {
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  padding: 20px;
+}
+
+.account-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.account-tab {
+  border: 1px solid #111;
+  background: #fff;
+  color: #111;
+  padding: 10px 12px;
+  cursor: pointer;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.account-tab.active {
+  background: #111;
+  color: #fff;
+}
+
+.account-form {
+  display: grid;
+  gap: 12px;
+}
+
+.account-form label {
+  display: grid;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.account-form input {
+  border: 1px solid #d6d6d6;
+  border-radius: 0;
+  padding: 10px 12px;
+  font-size: 14px;
+}
+
+.account-form button,
+.google-btn,
+.signout-btn {
+  border: 1px solid #111;
+  background: #111;
+  color: #fff;
+  padding: 11px 14px;
+  cursor: pointer;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.google-btn,
+.signout-btn {
+  width: 100%;
+}
+
+.signout-btn {
+  margin-top: 12px;
+  background: #fff;
+  color: #111;
+}
+
+.account-divider {
+  text-align: center;
+  margin: 14px 0;
+  color: #888;
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+}
+
+.account-info,
+.account-message,
+.account-error {
+  margin: 10px 0 0;
+  font-size: 14px;
+}
+
+.account-message {
+  color: #0a7a2f;
+}
+
+.account-error {
+  color: #c0392b;
+}
+
+@media (max-width: 640px) {
+  .account-page {
+    padding: 22px 12px 42px;
+  }
+
+  .account-title {
+    font-size: 24px;
+  }
+
+  .account-card {
+    padding: 14px;
+  }
+}

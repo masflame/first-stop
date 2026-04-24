@@ -10,6 +10,7 @@ import CollectionPage from "./pages/CollectionPage";
 import ProductPage from "./pages/ProductPage";
 import BrandsPage from "./pages/BrandsPage";
 import CheckoutPage from "./pages/CheckoutPage";
+import AccountPage from "./pages/AccountPage";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentCancel from "./pages/PaymentCancel";
 import RafflesPage from "./pages/RafflesPage";
@@ -60,7 +61,7 @@ function AppLayout() {
         <Route path="/checkout" element={<CheckoutPage />} />
         <Route path="/payment/success" element={<PaymentSuccess />} />
         <Route path="/payment/cancel" element={<PaymentCancel />} />
-        <Route path="/account" element={<PlaceholderPage title="ACCOUNT" />} />
+        <Route path="/account" element={<AccountPage />} />
         <Route path="/blog" element={<PlaceholderPage title="BLOG" />} />
         <Route path="/about" element={<PlaceholderPage title="ABOUT US" />} />
         <Route path="/stores" element={<PlaceholderPage title="STORES" />} />

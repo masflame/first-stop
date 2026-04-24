@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 import { supabase } from "../utils/supabase";
 import { getVisitorId, getSessionId } from "../utils/fingerprint";
 
-const VISITOR_TABLE = "ShoeDistrict_Visitors";
+const VISITOR_TABLE = "Shoedistrict_Visitors";
 
 function visitorsTable() {
   if (!supabase) return null;

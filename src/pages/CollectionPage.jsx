@@ -193,8 +193,8 @@ export default function CollectionPage() {
         title={meta.title}
         description={
           meta.description
-            ? `${meta.description} Shop ${meta.title.toLowerCase()} online in South Africa at FIRST STOP.`
-            : `Shop ${meta.title.toLowerCase()} online in South Africa at FIRST STOP.`
+            ? `${meta.description} Shop ${meta.title.toLowerCase()} online in South Africa at SHOE DISTRICT.`
+            : `Shop ${meta.title.toLowerCase()} online in South Africa at SHOE DISTRICT.`
         }
         canonicalPath={canonicalPath}
         jsonLd={collectionSchemas}

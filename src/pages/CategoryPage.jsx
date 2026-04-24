@@ -68,7 +68,7 @@ export default function CategoryPage() {
     <main className="category-page">
       <Seo
         title={`${data.title} Sneakers, Clothing & Accessories`}
-        description={`Shop ${data.title.toLowerCase()} sneakers, streetwear clothing, and accessories online in South Africa at FIRST STOP. ${data.description}`}
+        description={`Shop ${data.title.toLowerCase()} sneakers, streetwear clothing, and accessories online in South Africa at SHOE DISTRICT. ${data.description}`}
         canonicalPath={location.pathname}
         jsonLd={buildBreadcrumbSchema([
           { name: "Home", path: "/" },

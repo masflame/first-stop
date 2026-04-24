@@ -82,7 +82,7 @@ function PlaceholderPage({ title }) {
     <main style={{ minHeight: "50vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
       <Seo
         title={title}
-        description="This page is coming soon on FIRST STOP."
+        description="This page is coming soon on SHOE DISTRICT."
         noindex
       />
       <div style={{ textAlign: "center" }}>

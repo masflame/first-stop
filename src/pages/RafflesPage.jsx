@@ -52,7 +52,7 @@ export default function RafflesPage() {
     <main className="raff-page" ref={pageRef}>
       <Seo
         title="Raffles"
-        description="Enter FIRST STOP raffles for exclusive sneaker launches and limited pairs online in South Africa."
+        description="Enter SHOE DISTRICT raffles for exclusive sneaker launches and limited pairs online in South Africa."
         canonicalPath="/collections/raffle"
         jsonLd={buildBreadcrumbSchema([
           { name: "Home", path: "/" },
@@ -64,7 +64,7 @@ export default function RafflesPage() {
         <div className="raff-hero__watermark" aria-hidden="true">05.05</div>
 
         <div className="raff-hero__top">
-          <span className="raff-hero__eyebrow">FIRST STOP EXCLUSIVE</span>
+          <span className="raff-hero__eyebrow">SHOE DISTRICT EXCLUSIVE</span>
         </div>
 
         <h1 className="raff-hero__title">
@@ -118,7 +118,7 @@ export default function RafflesPage() {
             <span className="raff-how__num">01</span>
             <h3 className="raff-how__title">EARN TOKENS</h3>
             <p className="raff-how__desc">
-              Every R8 you spend at First Stop earns you 1 raffle token. Tokens accumulate automatically in your account.
+              Every R8 you spend at Shoe District earns you 1 raffle token. Tokens accumulate automatically in your account.
             </p>
           </div>
 

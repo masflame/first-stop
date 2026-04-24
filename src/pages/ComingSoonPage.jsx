@@ -98,7 +98,7 @@ export default function ComingSoonPage() {
     <main className="soon-page" ref={heroRef}>
       <Seo
         title="Coming Soon"
-        description="Preview upcoming sneaker and streetwear drops launching soon online in South Africa at FIRST STOP."
+        description="Preview upcoming sneaker and streetwear drops launching soon online in South Africa at SHOE DISTRICT."
         canonicalPath="/collections/soon"
         jsonLd={buildBreadcrumbSchema([
           { name: "Home", path: "/" },

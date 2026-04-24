@@ -64,7 +64,7 @@ export default function ProductPage() {
       sku: product.sku || undefined,
       description:
         product.description ||
-        `Shop ${product.name} by ${product.brand} online in South Africa at FIRST STOP.`,
+        `Shop ${product.name} by ${product.brand} online in South Africa at SHOE DISTRICT.`,
       offers: {
         "@type": "Offer",
         priceCurrency: currency,
@@ -92,7 +92,7 @@ export default function ProductPage() {
         title={`${product.brand} ${product.name}`}
         description={
           product.description ||
-          `Shop ${product.name} by ${product.brand} online in South Africa at FIRST STOP.`
+          `Shop ${product.name} by ${product.brand} online in South Africa at SHOE DISTRICT.`
         }
         canonicalPath={`/product/${product.id}`}
         image={firstImage}

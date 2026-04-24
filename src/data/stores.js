@@ -1,7 +1,7 @@
 const stores = [
   {
     id: 1,
-    name: "FIRST STOP BERLIN",
+    name: "SHOE DISTRICT BERLIN",
     address: "Köpenicker Strasse 195 A",
     city: "10997 Berlin",
     phone: "+49 30 610 766 33",
@@ -10,17 +10,17 @@ const stores = [
   },
   {
     id: 2,
-    name: "FIRST STOP WOMEN",
+    name: "SHOE DISTRICT WOMEN",
     address: "",
     city: "",
     phone: "",
-    description: "Women's selection now available at FIRST STOP Berlin",
+    description: "Women's selection now available at SHOE DISTRICT Berlin",
     image: "/images/stores/women.jpg",
     slug: "first-stop-women-store",
   },
   {
     id: 3,
-    name: "FIRST STOP COLOGNE",
+    name: "SHOE DISTRICT COLOGNE",
     address: "Hahnenstrasse 20",
     city: "50667 Köln",
     phone: "+49 30 935 225 36 01",

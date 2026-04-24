@@ -183,7 +183,7 @@ export default function CheckoutPage() {
     <main className="checkout-page">
       <Seo
         title="Checkout"
-        description="Secure checkout at FIRST STOP."
+        description="Secure checkout at SHOE DISTRICT."
         canonicalPath="/checkout"
         noindex
       />

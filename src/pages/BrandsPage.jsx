@@ -8,7 +8,7 @@ export default function BrandsPage() {
     <main className="brands-page">
       <Seo
         title="Brands"
-        description="Browse sneaker and streetwear brands available online in South Africa at FIRST STOP, including Nike, Jordan, Adidas, New Balance, ASICS, Puma, and UGG."
+        description="Browse sneaker and streetwear brands available online in South Africa at SHOE DISTRICT, including Nike, Jordan, Adidas, New Balance, ASICS, Puma, and UGG."
         canonicalPath="/brands"
         jsonLd={buildBreadcrumbSchema([
           { name: "Home", path: "/" },

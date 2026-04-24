@@ -20,7 +20,7 @@ const brands = [
     names: ["CARHARTT WIP", "CLARKS ORIGINALS", "CONVERSE", "CROCS"],
   },
   { letter: "D", names: ["DIADORA", "DICKIES", "DR. MARTENS"] },
-  { letter: "F", names: ["FILLING PIECES", "FIRST STOP"] },
+  { letter: "F", names: ["FILLING PIECES"] },
   { letter: "G", names: ["GRAMICCI"] },
   { letter: "H", names: ["HOKA"] },
   { letter: "J", names: ["JORDAN"] },
@@ -45,7 +45,7 @@ const brands = [
   { letter: "R", names: ["REEBOK"] },
   {
     letter: "S",
-    names: ["SALOMON", "SAUCONY", "STÜSSY", "SUICOKE"],
+    names: ["SALOMON", "SAUCONY", "SHOE DISTRICT", "STÜSSY", "SUICOKE"],
   },
   { letter: "T", names: ["TIMBERLAND"] },
   { letter: "U", names: ["UGG", "UMBRO"] },

@@ -148,14 +148,14 @@ export default function HomePage() {
     {
       "@context": "https://schema.org",
       "@type": "Organization",
-      name: "FIRST STOP",
+      name: "SHOE DISTRICT",
       url: getCanonicalUrl("/"),
       logo: getCanonicalUrl("/favicon.svg"),
     },
     {
       "@context": "https://schema.org",
       "@type": "WebSite",
-      name: "FIRST STOP",
+      name: "SHOE DISTRICT",
       url: getCanonicalUrl("/"),
     },
     buildBreadcrumbSchema([{ name: "Home", path: "/" }]),
@@ -166,7 +166,7 @@ export default function HomePage() {
     <main>
       <Seo
         title="Home"
-        description="Shop premium sneakers and streetwear online in South Africa. Discover Nike, Jordan, Adidas, New Balance, ASICS, Puma, UGG, new arrivals, and curated drops at FIRST STOP."
+        description="Shop premium sneakers and streetwear online in South Africa. Discover Nike, Jordan, Adidas, New Balance, ASICS, Puma, UGG, new arrivals, and curated drops at SHOE DISTRICT."
         canonicalPath="/"
         jsonLd={homeSchemas}
       />

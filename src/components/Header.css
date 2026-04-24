@@ -67,12 +67,13 @@
   align-items: center;
   text-decoration: none;
   line-height: 0;
+  margin: 0 14px;
 }
 
 .logo-wordmark {
   display: block;
   width: auto;
-  height: 60px;
+  height: 52px;
   object-fit: contain;
 }
 
@@ -387,7 +388,7 @@
   }
 
   .header-main {
-    padding: 16px 18px;
+    padding: 14px 16px;
     gap: 8px;
   }
 
@@ -403,7 +404,7 @@
   }
 
   .logo-wordmark {
-    height: 50px;
+    height: 42px;
   }
 
   .icon-btn svg {
@@ -418,7 +419,8 @@
 
   .logo {
     min-width: 0;
-    max-width: 52%;
+    max-width: 44%;
+    margin: 0 12px;
   }
 
   .search-overlay {
@@ -452,6 +454,11 @@
 
 @media (max-width: 420px) {
   .logo-wordmark {
-    height: 47px;
+    height: 38px;
+  }
+
+  .logo {
+    max-width: 42%;
+    margin: 0 10px;
   }
 }

@@ -1,5 +1,5 @@
 export const SITE_NAME = "SHOE DISTRICT";
-export const DEFAULT_SITE_URL = import.meta.env.VITE_SITE_URL || "https://first-stop.vercel.app";
+export const DEFAULT_SITE_URL = import.meta.env.VITE_SITE_URL || "https://www.shoedistrict.co.za";
 export const DEFAULT_DESCRIPTION =
   "Shop premium sneakers and streetwear online in South Africa from Nike, Jordan, Adidas, New Balance, ASICS, Puma, and UGG.";
 export const DEFAULT_OG_IMAGE = "/favicon.svg";

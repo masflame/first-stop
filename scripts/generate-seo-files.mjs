@@ -33,7 +33,7 @@ const siteUrl =
   process.env.VITE_SITE_URL ||
   readEnvValue(".env.production", "VITE_SITE_URL") ||
   readEnvValue(".env.local", "VITE_SITE_URL") ||
-  "https://first-stop.vercel.app";
+  "https://www.shoedistrict.co.za";
 
 const brandSlugMap = {
   nike: "NIKE",

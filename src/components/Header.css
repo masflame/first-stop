@@ -63,44 +63,17 @@
 
 .logo {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   text-decoration: none;
-  gap: 0;
+  line-height: 0;
 }
 
-.logo-mark {
-  font-family: "Teko", "Arial Narrow", sans-serif;
-  font-size: 32px;
-  font-weight: 700;
-  letter-spacing: 3px;
-  color: rgba(0, 0, 0, 0.82);
-  text-transform: uppercase;
-  transition: color 0.3s;
-  line-height: 1;
-}
-
-.logo:hover .logo-mark {
-  color: rgba(0, 0, 0, 0.85);
-}
-
-.logo-pipe {
-  display: inline-block;
-  font-weight: 500;
-  color: rgba(0, 0, 0, 0.35);
-  margin: 0 3px;
-  letter-spacing: 0;
-}
-
-.logo-coords {
-  font-family: "Teko", "Arial Narrow", sans-serif;
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 2.4px;
-  color: rgba(0, 0, 0, 0.32);
-  text-transform: uppercase;
-  margin-top: 1px;
-  line-height: 1;
+.logo-wordmark {
+  display: block;
+  width: auto;
+  height: 64px;
+  object-fit: contain;
 }
 
 .icon-btn {
@@ -429,14 +402,8 @@
     flex: 1;
   }
 
-  .logo-mark {
-    font-size: 26px;
-    letter-spacing: 1.8px;
-  }
-
-  .logo-coords {
-    font-size: 9px;
-    letter-spacing: 2.1px;
+  .logo-wordmark {
+    height: 54px;
   }
 
   .icon-btn svg {
@@ -452,13 +419,6 @@
   .logo {
     min-width: 0;
     max-width: 52%;
-  }
-
-  .logo-coords {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 100%;
   }
 
   .search-overlay {
@@ -491,7 +451,7 @@
 }
 
 @media (max-width: 420px) {
-  .logo-coords {
-    display: none;
+  .logo-wordmark {
+    height: 50px;
   }
 }

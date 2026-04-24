@@ -6,6 +6,7 @@ import { resolveImage } from "../utils/imageResolver";
 import { buildPayfastData, PAYFAST_URL } from "../utils/payfast";
 import { supabase } from "../utils/supabase";
 import { formatSizeDisplay } from "../utils/sizeFormat";
+import logoName from "../assets/SD-name.png";
 import Seo from "../components/Seo";
 import "./CheckoutPage.css";
 
@@ -191,8 +192,7 @@ export default function CheckoutPage() {
         {/* Left: Forms */}
         <div className="checkout-form-col">
           <Link to="/" className="checkout-logo">
-            <span className="logo-mark">FIRST<span className="logo-pipe">|</span>STOP</span>
-            <span className="logo-coords">52.5200° N, 13.4050° E</span>
+            <img src={logoName} alt="Shoe District" className="checkout-logo__wordmark" />
           </Link>
 
           {/* Breadcrumb steps */}

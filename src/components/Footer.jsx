@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import logoName from "../assets/SD-name.png";
 import "./Footer.css";
 
 const footerSections = [
@@ -145,8 +146,7 @@ export default function Footer() {
       <div className="footer-bottom">
         <div className="footer-bottom__inner">
           <Link to="/" className="footer-logo">
-            <span className="logo-mark">FIRST<span className="logo-pipe">|</span>STOP</span>
-            <span className="logo-coords">52.5200° N, 13.4050° E</span>
+            <img src={logoName} alt="Shoe District" className="footer-logo__wordmark" />
           </Link>
           <div className="footer-social">
             <a href="#" className="footer-social__link" aria-label="Instagram">

@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Search, User, ShoppingBag, Menu, X, ChevronDown } from "lucide-react";
 import { useBag } from "../context/BagContext";
 import { useLenis } from "./SmoothScroll";
+import logoName from "../assets/SD-name.png";
 import "./Header.css";
 
 const navLinks = [
@@ -112,8 +113,7 @@ export default function Header() {
         </div>
 
         <a href="/" className="logo" onClick={handleLogoClick}>
-          <span className="logo-mark">FIRST<span className="logo-pipe">|</span>STOP</span>
-          <span className="logo-coords">52.5200° N, 13.4050° E</span>
+          <img src={logoName} alt="Shoe District" className="logo-wordmark" />
         </a>
 
         <div className="header-right">

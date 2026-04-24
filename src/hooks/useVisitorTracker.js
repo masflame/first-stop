@@ -1,13 +1,133 @@
 import { useEffect, useRef, useCallback } from "react";
 import { useLocation } from "react-router-dom";
-import { supabase } from "../utils/supabase";
 import { getVisitorId, getSessionId } from "../utils/fingerprint";
 
 const VISITOR_TABLE = "Shoedistrict_Visitors";
+const supabaseUrl = import.meta.env.VITE_PROJECT_URL || import.meta.env.VITE_SUPABASE_URL;
+const supabaseKey = import.meta.env.VITE_PUBLISHABLE_KEY || import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-function visitorsTable() {
-  if (!supabase) return null;
-  return supabase.from(VISITOR_TABLE);
+function getVisitorEndpoint(query = {}) {
+  if (!supabaseUrl) return null;
+
+  const url = new URL(`/rest/v1/${VISITOR_TABLE}`, supabaseUrl);
+  Object.entries(query).forEach(([key, value]) => {
+    if (value !== undefined && value !== null) {
+      url.searchParams.set(key, value);
+    }
+  });
+
+  return url.toString();
+}
+
+async function requestVisitors({ method = "GET", query, body, prefer, keepalive = false }) {
+  if (!supabaseUrl || !supabaseKey) {
+    return { data: null, error: null };
+  }
+
+  const endpoint = getVisitorEndpoint(query);
+  if (!endpoint) {
+    return { data: null, error: null };
+  }
+
+  const headers = {
+    apikey: supabaseKey,
+    Authorization: `Bearer ${supabaseKey}`,
+  };
+
+  if (body !== undefined) {
+    headers["Content-Type"] = "application/json";
+  }
+
+  if (prefer) {
+    headers.Prefer = prefer;
+  }
+
+  try {
+    const response = await fetch(endpoint, {
+      method,
+      headers,
+      body: body === undefined ? undefined : JSON.stringify(body),
+      keepalive,
+    });
+
+    if (!response.ok) {
+      let details = null;
+
+      try {
+        details = await response.json();
+      } catch {
+        details = await response.text();
+      }
+
+      return {
+        data: null,
+        error: {
+          message: `Request failed with status ${response.status}`,
+          status: response.status,
+          details,
+        },
+      };
+    }
+
+    const contentType = response.headers.get("content-type") || "";
+    if (!contentType.includes("application/json")) {
+      return { data: null, error: null };
+    }
+
+    return {
+      data: await response.json(),
+      error: null,
+    };
+  } catch (error) {
+    return {
+      data: null,
+      error: {
+        message: error instanceof Error ? error.message : "Unknown request error",
+      },
+    };
+  }
+}
+
+async function fetchVisitor(visitorId) {
+  const { data, error } = await requestVisitors({
+    query: {
+      visitor_id: `eq.${visitorId}`,
+      select: "*",
+      limit: "1",
+    },
+  });
+
+  return {
+    data: Array.isArray(data) ? data[0] || null : null,
+    error,
+  };
+}
+
+async function insertVisitor(row) {
+  const { data, error } = await requestVisitors({
+    method: "POST",
+    query: { select: "*" },
+    body: [row],
+    prefer: "return=representation",
+  });
+
+  return {
+    data: Array.isArray(data) ? data[0] || null : null,
+    error,
+  };
+}
+
+async function updateVisitor(visitorId, payload, options = {}) {
+  return requestVisitors({
+    method: "PATCH",
+    query: {
+      visitor_id: `eq.${visitorId}`,
+      ...(options.select ? { select: options.select } : {}),
+    },
+    body: payload,
+    prefer: options.prefer || "return=minimal",
+    keepalive: options.keepalive || false,
+  });
 }
 
 async function getClientIpAddress() {
@@ -55,12 +175,11 @@ export default function useVisitorTracker() {
   const persist = useCallback(async (sessions, extra = {}) => {
     if (!dbRow.current) return;
 
-    const table = visitorsTable();
-    if (!table) return;
-
-    const { error } = await table
-      .update({ sessions, last_seen: new Date().toISOString(), ...extra })
-      .eq("visitor_id", dbRow.current.visitor_id);
+    const { error } = await updateVisitor(dbRow.current.visitor_id, {
+      sessions,
+      last_seen: new Date().toISOString(),
+      ...extra,
+    });
 
     if (error) {
       console.error("Visitor persist error:", error);
@@ -68,7 +187,7 @@ export default function useVisitorTracker() {
   }, []);
 
   useEffect(() => {
-    if (!supabase || initCalled.current) return;
+    if (!supabaseUrl || !supabaseKey || initCalled.current) return;
     initCalled.current = true;
 
     (async () => {
@@ -77,8 +196,6 @@ export default function useVisitorTracker() {
       const now = new Date().toISOString();
       const utm = getUtm();
       const ipAddress = await getClientIpAddress();
-      const table = visitorsTable();
-      if (!table) return;
 
       const newSession = {
         sid: sessionId,
@@ -94,10 +211,7 @@ export default function useVisitorTracker() {
         }],
       };
 
-      const { data: existing, error: existingError } = await table
-        .select("*")
-        .eq("visitor_id", visitorId)
-        .maybeSingle();
+      const { data: existing, error: existingError } = await fetchVisitor(visitorId);
 
       if (existingError) {
         console.error("Visitor fetch error:", existingError);
@@ -110,14 +224,12 @@ export default function useVisitorTracker() {
 
         dbRow.current = existing;
 
-        const { error } = await table
-          .update({
-            sessions,
-            visit_count: (existing.visit_count || 0) + 1,
-            last_seen: now,
-            ...(ipAddress ? { ip_address: ipAddress } : {}),
-          })
-          .eq("visitor_id", visitorId);
+        const { error } = await updateVisitor(visitorId, {
+          sessions,
+          visit_count: (existing.visit_count || 0) + 1,
+          last_seen: now,
+          ...(ipAddress ? { ip_address: ipAddress } : {}),
+        });
 
         if (error) {
           console.error("Visitor update error:", error);
@@ -137,10 +249,7 @@ export default function useVisitorTracker() {
           ...(ipAddress ? { ip_address: ipAddress } : {}),
         };
 
-        const { data, error } = await table
-          .insert([row])
-          .select()
-          .single();
+        const { data, error } = await insertVisitor(row);
 
         if (error) {
           console.error("Visitor insert error:", error);
@@ -210,23 +319,11 @@ export default function useVisitorTracker() {
       const sessions = dbRow.current.sessions;
       sessions[sessions.length - 1] = session.current;
 
-      const baseUrl = import.meta.env.VITE_PROJECT_URL || import.meta.env.VITE_SUPABASE_URL;
-      const apiKey = import.meta.env.VITE_PUBLISHABLE_KEY || import.meta.env.VITE_SUPABASE_ANON_KEY;
-      if (!baseUrl || !apiKey) return;
-
-      const url = `${baseUrl}/rest/v1/${VISITOR_TABLE}?visitor_id=eq.${encodeURIComponent(dbRow.current.visitor_id)}`;
-
-      fetch(url, {
-        method: "PATCH",
-        headers: {
-          apikey: apiKey,
-          Authorization: `Bearer ${apiKey}`,
-          "Content-Type": "application/json",
-          Prefer: "return=minimal",
-        },
-        body: JSON.stringify({ sessions, last_seen: new Date().toISOString() }),
-        keepalive: true,
-      }).catch(() => {});
+      updateVisitor(
+        dbRow.current.visitor_id,
+        { sessions, last_seen: new Date().toISOString() },
+        { keepalive: true },
+      ).catch(() => {});
     }
 
     window.addEventListener("beforeunload", onExit);

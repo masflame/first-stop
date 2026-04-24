@@ -72,7 +72,7 @@
 .logo-wordmark {
   display: block;
   width: auto;
-  height: 64px;
+  height: 60px;
   object-fit: contain;
 }
 
@@ -403,7 +403,7 @@
   }
 
   .logo-wordmark {
-    height: 54px;
+    height: 50px;
   }
 
   .icon-btn svg {
@@ -452,6 +452,6 @@
 
 @media (max-width: 420px) {
   .logo-wordmark {
-    height: 50px;
+    height: 47px;
   }
 }

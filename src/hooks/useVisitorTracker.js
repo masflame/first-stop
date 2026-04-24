@@ -3,13 +3,11 @@ import { useLocation } from "react-router-dom";
 import { supabase } from "../utils/supabase";
 import { getVisitorId, getSessionId } from "../utils/fingerprint";
 
-const VISITOR_SCHEMA = import.meta.env.VITE_VISITOR_SCHEMA || "public";
-const FALLBACK_VISITOR_SCHEMA = "public";
-const VISITOR_TABLE = "Visitors";
+const VISITOR_TABLE = "ShoeDistrict_Visitors";
 
-function visitorsTable(schemaName) {
+function visitorsTable() {
   if (!supabase) return null;
-  return supabase.schema(schemaName).from(VISITOR_TABLE);
+  return supabase.from(VISITOR_TABLE);
 }
 
 async function getClientIpAddress() {
@@ -36,23 +34,8 @@ export default function useVisitorTracker() {
   const maxScroll = useRef(0);
   const dbRow = useRef(null);
   const session = useRef(null);
-  const activeSchema = useRef(VISITOR_SCHEMA);
   const ready = useRef(false);
   const initCalled = useRef(false);
-
-  const runWithSchemaFallback = useCallback(async (runner) => {
-    let result = await runner(activeSchema.current);
-
-    if (
-      result?.error?.code === "PGRST106" &&
-      activeSchema.current !== FALLBACK_VISITOR_SCHEMA
-    ) {
-      activeSchema.current = FALLBACK_VISITOR_SCHEMA;
-      result = await runner(activeSchema.current);
-    }
-
-    return result;
-  }, []);
 
   function scrollPct() {
     const doc = document.documentElement;
@@ -72,22 +55,17 @@ export default function useVisitorTracker() {
   const persist = useCallback(async (sessions, extra = {}) => {
     if (!dbRow.current) return;
 
-    const table = visitorsTable(activeSchema.current);
+    const table = visitorsTable();
     if (!table) return;
 
-    const { error } = await runWithSchemaFallback(async (schemaName) => {
-      const nextTable = visitorsTable(schemaName);
-      if (!nextTable) return { data: null, error: null };
-
-      return nextTable
-        .update({ sessions, last_seen: new Date().toISOString(), ...extra })
-        .eq("visitor_id", dbRow.current.visitor_id);
-    });
+    const { error } = await table
+      .update({ sessions, last_seen: new Date().toISOString(), ...extra })
+      .eq("visitor_id", dbRow.current.visitor_id);
 
     if (error) {
       console.error("Visitor persist error:", error);
     }
-  }, [runWithSchemaFallback]);
+  }, []);
 
   useEffect(() => {
     if (!supabase || initCalled.current) return;
@@ -99,6 +77,8 @@ export default function useVisitorTracker() {
       const now = new Date().toISOString();
       const utm = getUtm();
       const ipAddress = await getClientIpAddress();
+      const table = visitorsTable();
+      if (!table) return;
 
       const newSession = {
         sid: sessionId,
@@ -114,17 +94,10 @@ export default function useVisitorTracker() {
         }],
       };
 
-      const { data: existing, error: existingError } = await runWithSchemaFallback(
-        async (schemaName) => {
-          const table = visitorsTable(schemaName);
-          if (!table) return { data: null, error: null };
-
-          return table
-            .select("*")
-            .eq("visitor_id", visitorId)
-            .maybeSingle();
-        }
-      );
+      const { data: existing, error: existingError } = await table
+        .select("*")
+        .eq("visitor_id", visitorId)
+        .maybeSingle();
 
       if (existingError) {
         console.error("Visitor fetch error:", existingError);
@@ -137,19 +110,14 @@ export default function useVisitorTracker() {
 
         dbRow.current = existing;
 
-        const { error } = await runWithSchemaFallback(async (schemaName) => {
-          const table = visitorsTable(schemaName);
-          if (!table) return { data: null, error: null };
-
-          return table
-            .update({
-              sessions,
-              visit_count: (existing.visit_count || 0) + 1,
-              last_seen: now,
-              ...(ipAddress ? { ip_address: ipAddress } : {}),
-            })
-            .eq("visitor_id", visitorId);
-        });
+        const { error } = await table
+          .update({
+            sessions,
+            visit_count: (existing.visit_count || 0) + 1,
+            last_seen: now,
+            ...(ipAddress ? { ip_address: ipAddress } : {}),
+          })
+          .eq("visitor_id", visitorId);
 
         if (error) {
           console.error("Visitor update error:", error);
@@ -169,15 +137,10 @@ export default function useVisitorTracker() {
           ...(ipAddress ? { ip_address: ipAddress } : {}),
         };
 
-        const { data, error } = await runWithSchemaFallback(async (schemaName) => {
-          const table = visitorsTable(schemaName);
-          if (!table) return { data: null, error: null };
-
-          return table
-            .insert([row])
-            .select()
-            .single();
-        });
+        const { data, error } = await table
+          .insert([row])
+          .select()
+          .single();
 
         if (error) {
           console.error("Visitor insert error:", error);
@@ -189,7 +152,7 @@ export default function useVisitorTracker() {
       session.current = newSession;
       ready.current = true;
     })();
-  }, [runWithSchemaFallback]);
+  }, []);
 
   useEffect(() => {
     if (!ready.current || !session.current || !dbRow.current) return;
@@ -252,13 +215,6 @@ export default function useVisitorTracker() {
       if (!baseUrl || !apiKey) return;
 
       const url = `${baseUrl}/rest/v1/${VISITOR_TABLE}?visitor_id=eq.${encodeURIComponent(dbRow.current.visitor_id)}`;
-      const schemaHeaders =
-        activeSchema.current && activeSchema.current !== "public"
-          ? {
-              "Accept-Profile": activeSchema.current,
-              "Content-Profile": activeSchema.current,
-            }
-          : {};
 
       fetch(url, {
         method: "PATCH",
@@ -266,7 +222,6 @@ export default function useVisitorTracker() {
           apikey: apiKey,
           Authorization: `Bearer ${apiKey}`,
           "Content-Type": "application/json",
-          ...schemaHeaders,
           Prefer: "return=minimal",
         },
         body: JSON.stringify({ sessions, last_seen: new Date().toISOString() }),

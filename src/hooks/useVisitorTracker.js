@@ -2,14 +2,26 @@ import { useEffect, useRef, useCallback } from "react";
 import { useLocation } from "react-router-dom";
 import { getVisitorId, getSessionId } from "../utils/fingerprint";
 
-const VISITOR_TABLE = "Shoedistrict_Visitors";
+const PRIMARY_VISITOR_TABLE = "Shoedistrict_Visitors";
+const FALLBACK_VISITOR_TABLE = "Visitors";
+let activeVisitorTable = PRIMARY_VISITOR_TABLE;
 const supabaseUrl = import.meta.env.VITE_PROJECT_URL || import.meta.env.VITE_SUPABASE_URL;
 const supabaseKey = import.meta.env.VITE_PUBLISHABLE_KEY || import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-function getVisitorEndpoint(query = {}) {
+function getVisitorTablesInOrder() {
+  return [activeVisitorTable, PRIMARY_VISITOR_TABLE, FALLBACK_VISITOR_TABLE].filter(
+    (tableName, index, tables) => tableName && tables.indexOf(tableName) === index,
+  );
+}
+
+function isMissingVisitorTableError(error) {
+  return error?.status === 404 && error?.details?.code === "PGRST205";
+}
+
+function getVisitorEndpoint(tableName, query = {}) {
   if (!supabaseUrl) return null;
 
-  const url = new URL(`/rest/v1/${VISITOR_TABLE}`, supabaseUrl);
+  const url = new URL(`/rest/v1/${tableName}`, supabaseUrl);
   Object.entries(query).forEach(([key, value]) => {
     if (value !== undefined && value !== null) {
       url.searchParams.set(key, value);
@@ -19,14 +31,14 @@ function getVisitorEndpoint(query = {}) {
   return url.toString();
 }
 
-async function requestVisitors({ method = "GET", query, body, prefer, keepalive = false }) {
+async function requestVisitorTable(tableName, { method = "GET", query, body, prefer, keepalive = false }) {
   if (!supabaseUrl || !supabaseKey) {
-    return { data: null, error: null };
+    return { data: null, error: null, tableName };
   }
 
-  const endpoint = getVisitorEndpoint(query);
+  const endpoint = getVisitorEndpoint(tableName, query);
   if (!endpoint) {
-    return { data: null, error: null };
+    return { data: null, error: null, tableName };
   }
 
   const headers = {
@@ -66,6 +78,7 @@ async function requestVisitors({ method = "GET", query, body, prefer, keepalive 
           status: response.status,
           details,
         },
+        tableName,
       };
     }
 
@@ -77,6 +90,7 @@ async function requestVisitors({ method = "GET", query, body, prefer, keepalive 
     return {
       data: await response.json(),
       error: null,
+      tableName,
     };
   } catch (error) {
     return {
@@ -84,12 +98,33 @@ async function requestVisitors({ method = "GET", query, body, prefer, keepalive 
       error: {
         message: error instanceof Error ? error.message : "Unknown request error",
       },
+      tableName,
     };
   }
 }
 
+async function requestVisitors(options) {
+  let lastResult = { data: null, error: null, tableName: activeVisitorTable };
+
+  for (const tableName of getVisitorTablesInOrder()) {
+    const result = await requestVisitorTable(tableName, options);
+    lastResult = result;
+
+    if (!result.error) {
+      activeVisitorTable = tableName;
+      return result;
+    }
+
+    if (!isMissingVisitorTableError(result.error)) {
+      return result;
+    }
+  }
+
+  return lastResult;
+}
+
 async function fetchVisitor(visitorId) {
-  const { data, error } = await requestVisitors({
+    const { data, error } = await requestVisitors({
     query: {
       visitor_id: `eq.${visitorId}`,
       select: "*",

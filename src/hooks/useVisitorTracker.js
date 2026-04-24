@@ -68,7 +68,7 @@ async function requestVisitorTable(tableName, { method = "GET", query, body, pre
       return {
         data: null,
         error: {
-          message: `Request failed with status ${response.status}`,
+          message: `Request failed with status ${response.status}${details?.message ? `: ${details.message}` : ""}`,
           status: response.status,
           details,
         },
@@ -253,7 +253,7 @@ export default function useVisitorTracker() {
         const row = {
           visitor_id: visitorId,
           user_agent: navigator.userAgent,
-          screen_resolution: `${screen.width}x${screen.height}`,
+          sscreen_resolution: `${screen.width}x${screen.height}`,
           language: navigator.language,
           platform: navigator.platform,
           visit_count: 1,

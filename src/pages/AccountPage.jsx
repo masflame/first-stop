@@ -175,7 +175,8 @@ export default function AccountPage() {
     setMessage("");
     setError("");
 
-    const redirectTo = `${window.location.origin}/account`;
+    const siteUrl = import.meta.env.VITE_SITE_URL || window.location.origin;
+    const redirectTo = `${siteUrl}/account`;
     const { error: oauthError } = await authSupabase.auth.signInWithOAuth({
       provider: "google",
       options: { redirectTo },

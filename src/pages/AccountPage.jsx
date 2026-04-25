@@ -28,6 +28,11 @@ export default function AccountPage() {
   const [authForm, setAuthForm] = useState({
     email: "",
     password: "",
+    first_name: "",
+    last_name: "",
+    username: "",
+    phone: "",
+    gender: "",
   });
 
   const [profile, setProfile] = useState(emptyProfile);
@@ -80,7 +85,7 @@ export default function AccountPage() {
     await Promise.all([loadOrCreateUserProfile(email), loadPurchaseHistory(email)]);
   }
 
-  async function loadOrCreateUserProfile(email) {
+  async function loadOrCreateUserProfile(email, seedProfile = null) {
     if (!authSupabase) return;
 
     const { data, error: fetchError } = await authSupabase
@@ -103,12 +108,18 @@ export default function AccountPage() {
       return;
     }
 
+    const metadataFullName = session?.user?.user_metadata?.full_name || "";
+    const metadataFirstName = metadataFullName.split(" ")[0] || "";
+    const metadataLastName = metadataFullName.split(" ").slice(1).join(" ") || "";
+
     const baseProfile = {
       ...emptyProfile,
       email,
-      username: email.split("@")[0],
-      first_name: session?.user?.user_metadata?.full_name?.split(" ")[0] || "",
-      last_name: session?.user?.user_metadata?.full_name?.split(" ").slice(1).join(" ") || "",
+      username: seedProfile?.username?.trim() || email.split("@")[0],
+      first_name: seedProfile?.first_name?.trim() || metadataFirstName,
+      last_name: seedProfile?.last_name?.trim() || metadataLastName,
+      phone: seedProfile?.phone?.trim() || "",
+      gender: seedProfile?.gender?.trim() || "",
       purchase_count: 0,
     };
 
@@ -204,9 +215,24 @@ export default function AccountPage() {
     setMessage("");
     setError("");
 
+    const email = authForm.email.trim();
+    const firstName = authForm.first_name.trim();
+    const lastName = authForm.last_name.trim();
+    const fullName = `${firstName} ${lastName}`.trim();
+
     const { data, error: signUpError } = await authSupabase.auth.signUp({
-      email: authForm.email.trim(),
+      email,
       password: authForm.password,
+      options: {
+        data: {
+          first_name: firstName || undefined,
+          last_name: lastName || undefined,
+          username: authForm.username.trim() || undefined,
+          phone: authForm.phone.trim() || undefined,
+          gender: authForm.gender.trim() || undefined,
+          full_name: fullName || undefined,
+        },
+      },
     });
 
     if (signUpError) {
@@ -216,7 +242,13 @@ export default function AccountPage() {
     }
 
     if (data.user?.email) {
-      await loadOrCreateUserProfile(data.user.email);
+      await loadOrCreateUserProfile(data.user.email, {
+        first_name: firstName,
+        last_name: lastName,
+        username: authForm.username,
+        phone: authForm.phone,
+        gender: authForm.gender,
+      });
     }
 
     setMessage("Sign up successful. Check your email if confirmation is required.");
@@ -256,7 +288,15 @@ export default function AccountPage() {
       setError(signOutError.message);
     } else {
       setMessage("");
-      setAuthForm({ email: "", password: "" });
+      setAuthForm({
+        email: "",
+        password: "",
+        first_name: "",
+        last_name: "",
+        username: "",
+        phone: "",
+        gender: "",
+      });
       setProfile(emptyProfile);
       setOrders([]);
     }
@@ -354,6 +394,50 @@ export default function AccountPage() {
                   onChange={(e) => setAuthForm((s) => ({ ...s, password: e.target.value }))}
                 />
               </label>
+              {mode === "signup" ? (
+                <>
+                  <label>
+                    First name
+                    <input
+                      type="text"
+                      value={authForm.first_name}
+                      onChange={(e) => setAuthForm((s) => ({ ...s, first_name: e.target.value }))}
+                    />
+                  </label>
+                  <label>
+                    Last name
+                    <input
+                      type="text"
+                      value={authForm.last_name}
+                      onChange={(e) => setAuthForm((s) => ({ ...s, last_name: e.target.value }))}
+                    />
+                  </label>
+                  <label>
+                    Username
+                    <input
+                      type="text"
+                      value={authForm.username}
+                      onChange={(e) => setAuthForm((s) => ({ ...s, username: e.target.value }))}
+                    />
+                  </label>
+                  <label>
+                    Phone
+                    <input
+                      type="tel"
+                      value={authForm.phone}
+                      onChange={(e) => setAuthForm((s) => ({ ...s, phone: e.target.value }))}
+                    />
+                  </label>
+                  <label>
+                    Gender
+                    <input
+                      type="text"
+                      value={authForm.gender}
+                      onChange={(e) => setAuthForm((s) => ({ ...s, gender: e.target.value }))}
+                    />
+                  </label>
+                </>
+              ) : null}
               <button type="submit" disabled={submitting}>
                 {submitting ? "Please wait..." : mode === "signin" ? "Sign In" : "Create Account"}
               </button>

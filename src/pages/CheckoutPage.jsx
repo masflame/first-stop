@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ChevronLeft, Lock, Truck, ShieldCheck } from "lucide-react";
 import { useBag } from "../context/BagContext";
 import { resolveImage } from "../utils/imageResolver";
 import { buildPayfastData, PAYFAST_URL } from "../utils/payfast";
+import { authSupabase } from "../utils/authSupabase";
 import { supabase } from "../utils/supabase";
 import { formatSizeDisplay } from "../utils/sizeFormat";
 import logoName from "../assets/SD-name.png";
@@ -16,10 +17,14 @@ function formatPrice(price) {
 
 const SHIPPING_RATE = 150;
 const FREE_SHIPPING_THRESHOLD = 1500;
+const GUEST_CHECKOUT_MAX_TOTAL = 5000;
 
 export default function CheckoutPage() {
   const { items, totalPrice } = useBag();
   const [step, setStep] = useState("info"); // info | payment
+  const [session, setSession] = useState(null);
+  const [authReady, setAuthReady] = useState(false);
+  const [checkoutMode, setCheckoutMode] = useState("unknown"); // unknown | account | guest
   const [form, setForm] = useState({
     email: "", firstName: "", lastName: "",
     address: "", apartment: "", city: "",
@@ -28,8 +33,65 @@ export default function CheckoutPage() {
   const [errors, setErrors] = useState({});
   const [processing, setProcessing] = useState(false);
 
+  const isSignedIn = Boolean(session?.user?.email);
+  const showCheckoutChoice = authReady && !isSignedIn && checkoutMode === "unknown";
+  const allowGuestCheckout = totalPrice <= GUEST_CHECKOUT_MAX_TOTAL;
   const shippingCost = totalPrice >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_RATE;
   const total = totalPrice + shippingCost;
+
+  useEffect(() => {
+    if (!authSupabase) {
+      setAuthReady(true);
+      setCheckoutMode("guest");
+      return undefined;
+    }
+
+    let mounted = true;
+
+    authSupabase.auth.getSession().then(({ data }) => {
+      if (!mounted) return;
+      const nextSession = data.session || null;
+      setSession(nextSession);
+      setCheckoutMode(nextSession?.user?.email ? "account" : "unknown");
+      setAuthReady(true);
+    });
+
+    const {
+      data: { subscription },
+    } = authSupabase.auth.onAuthStateChange((_event, nextSession) => {
+      setSession(nextSession || null);
+      setCheckoutMode(nextSession?.user?.email ? "account" : "unknown");
+    });
+
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!isSignedIn) return;
+
+    const metadata = session?.user?.user_metadata || {};
+    const metaFirst = metadata.first_name || metadata.full_name?.split(" ")[0] || "";
+    const metaLast =
+      metadata.last_name || metadata.full_name?.split(" ").slice(1).join(" ") || "";
+
+    setForm((prev) => ({
+      ...prev,
+      email: prev.email || session.user.email || "",
+      firstName: prev.firstName || metaFirst,
+      lastName: prev.lastName || metaLast,
+      phone: prev.phone || metadata.phone || "",
+    }));
+  }, [isSignedIn, session]);
+
+  useEffect(() => {
+    if (isSignedIn) return;
+    if (checkoutMode !== "guest") return;
+    if (allowGuestCheckout) return;
+    setCheckoutMode("unknown");
+  }, [allowGuestCheckout, checkoutMode, isSignedIn]);
 
   if (items.length === 0) {
     return (
@@ -63,11 +125,28 @@ export default function CheckoutPage() {
 
   const handleInfoSubmit = (e) => {
     e.preventDefault();
+    if (!isSignedIn && !allowGuestCheckout) {
+      setCheckoutMode("unknown");
+      setErrors((prev) => ({
+        ...prev,
+        general: `Sign in is required for orders above ${formatPrice(GUEST_CHECKOUT_MAX_TOTAL)}.`,
+      }));
+      return;
+    }
     if (validateInfo()) setStep("payment");
   };
 
   const handlePayfastCheckout = async (e) => {
     e.preventDefault();
+
+    if (!isSignedIn && !allowGuestCheckout) {
+      setCheckoutMode("unknown");
+      setErrors((prev) => ({
+        ...prev,
+        general: `Sign in is required for orders above ${formatPrice(GUEST_CHECKOUT_MAX_TOTAL)}.`,
+      }));
+      return;
+    }
 
     if (!validateInfo()) {
       setStep("info");
@@ -195,21 +274,49 @@ export default function CheckoutPage() {
             <img src={logoName} alt="Shoe District" className="checkout-logo__wordmark" />
           </Link>
 
-          {/* Breadcrumb steps */}
-          <div className="checkout-steps">
-            <button
-              className={`checkout-step ${step === "info" ? "checkout-step--active" : "checkout-step--done"}`}
-              onClick={() => step === "payment" && setStep("info")}
-            >
-              Information
-            </button>
-            <span className="checkout-steps__sep">/</span>
-            <span className={`checkout-step ${step === "payment" ? "checkout-step--active" : ""}`}>
-              Payment
-            </span>
-          </div>
+          {showCheckoutChoice ? (
+            <section className="checkout-auth-choice">
+              <h2>Checkout Options</h2>
+              <p>
+                Sign in to automatically link this order to your account history, or continue as a guest.
+              </p>
+              {!allowGuestCheckout ? (
+                <p className="checkout-auth-choice__notice">
+                  Guest checkout is available up to {formatPrice(GUEST_CHECKOUT_MAX_TOTAL)}. Please sign in for this order.
+                </p>
+              ) : null}
+              <div className="checkout-auth-choice__actions">
+                <Link to="/account?next=/checkout" className="checkout-auth-choice__signin">
+                  Sign In For Order Tracking
+                </Link>
+                <button
+                  type="button"
+                  className="checkout-auth-choice__guest"
+                  disabled={!allowGuestCheckout}
+                  onClick={() => setCheckoutMode("guest")}
+                >
+                  Continue As Guest
+                </button>
+              </div>
+              {errors.general ? <span className="checkout-field__error">{errors.general}</span> : null}
+            </section>
+          ) : (
+            <>
+              {/* Breadcrumb steps */}
+              <div className="checkout-steps">
+                <button
+                  className={`checkout-step ${step === "info" ? "checkout-step--active" : "checkout-step--done"}`}
+                  onClick={() => step === "payment" && setStep("info")}
+                >
+                  Information
+                </button>
+                <span className="checkout-steps__sep">/</span>
+                <span className={`checkout-step ${step === "payment" ? "checkout-step--active" : ""}`}>
+                  Payment
+                </span>
+              </div>
 
-          {step === "info" && (
+              {step === "info" && (
             <form className="checkout-form" onSubmit={handleInfoSubmit}>
               <h2 className="checkout-form__heading">Contact</h2>
               <div className="checkout-field">
@@ -324,9 +431,9 @@ export default function CheckoutPage() {
                 </button>
               </div>
             </form>
-          )}
+              )}
 
-          {step === "payment" && (
+              {step === "payment" && (
             <form className="checkout-form" onSubmit={handlePayfastCheckout}>
               {/* Shipping summary */}
               <div className="checkout-info-summary">
@@ -385,6 +492,8 @@ export default function CheckoutPage() {
                 <span>Secure 256-bit SSL encrypted payment</span>
               </div>
             </form>
+              )}
+            </>
           )}
         </div>
 

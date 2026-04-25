@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import Seo from "../components/Seo";
 import { authSupabase } from "../utils/authSupabase";
 import { supabase } from "../utils/supabase";
@@ -18,6 +19,8 @@ const emptyProfile = {
 };
 
 export default function AccountPage() {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [mode, setMode] = useState("signin");
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -40,6 +43,10 @@ export default function AccountPage() {
   const [ordersLoading, setOrdersLoading] = useState(false);
 
   const userEmail = useMemo(() => session?.user?.email || "", [session]);
+  const nextPath = useMemo(() => {
+    const next = new URLSearchParams(location.search).get("next");
+    return next && next.startsWith("/") ? next : "";
+  }, [location.search]);
 
   useEffect(() => {
     if (!authSupabase) {
@@ -80,6 +87,11 @@ export default function AccountPage() {
 
     loadAccountData(session.user.email);
   }, [session?.user?.email]);
+
+  useEffect(() => {
+    if (!session?.user || !nextPath) return;
+    navigate(nextPath, { replace: true });
+  }, [navigate, nextPath, session?.user]);
 
   async function loadAccountData(email) {
     await Promise.all([loadOrCreateUserProfile(email), loadPurchaseHistory(email)]);

@@ -90,6 +90,75 @@
   color: #ccc;
 }
 
+/* Auth choice */
+.checkout-auth-choice {
+  border: 1px solid #e5e5e5;
+  border-radius: 6px;
+  background: #fafafa;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.checkout-auth-choice h2 {
+  margin: 0;
+  font-size: 18px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.checkout-auth-choice p {
+  margin: 0;
+  color: #666;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.checkout-auth-choice__notice {
+  color: #8f5b00 !important;
+  background: #fff7e6;
+  border: 1px solid #ffe3ad;
+  border-radius: 4px;
+  padding: 8px 10px;
+}
+.checkout-auth-choice__actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+.checkout-auth-choice__signin,
+.checkout-auth-choice__guest {
+  flex: 1;
+  border: 1px solid #111;
+  padding: 12px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-align: center;
+  cursor: pointer;
+  font-family: inherit;
+}
+.checkout-auth-choice__signin {
+  background: #111;
+  color: #fff;
+  text-decoration: none;
+}
+.checkout-auth-choice__guest {
+  background: #fff;
+  color: #111;
+}
+.checkout-auth-choice__signin:hover {
+  background: #333;
+  border-color: #333;
+}
+.checkout-auth-choice__guest:hover {
+  background: #f3f3f3;
+}
+.checkout-auth-choice__guest:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  background: #f6f6f6;
+}
+
 /* Form */
 .checkout-form {
   display: flex;
@@ -617,6 +686,10 @@
     flex-direction: column-reverse;
     align-items: stretch;
     gap: 10px;
+  }
+
+  .checkout-auth-choice__actions {
+    flex-direction: column;
   }
 
   .checkout-submit,

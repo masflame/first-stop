@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import Seo from "../components/Seo";
 import { authSupabase } from "../utils/authSupabase";
+import { supabase } from "../utils/supabase";
 import "./AccountPage.css";
 
 const USERS_TABLE = "ShoeDistrict_Users";
+const ORDERS_TABLE = "Orders";
 
 const emptyProfile = {
   first_name: "",
@@ -29,6 +31,8 @@ export default function AccountPage() {
   });
 
   const [profile, setProfile] = useState(emptyProfile);
+  const [orders, setOrders] = useState([]);
+  const [ordersLoading, setOrdersLoading] = useState(false);
 
   const userEmail = useMemo(() => session?.user?.email || "", [session]);
 
@@ -62,14 +66,19 @@ export default function AccountPage() {
   useEffect(() => {
     if (!session?.user?.email || !authSupabase) {
       setProfile(emptyProfile);
+      setOrders([]);
       return;
     }
 
     setError("");
     setMessage("");
 
-    loadOrCreateUserProfile(session.user.email);
+    loadAccountData(session.user.email);
   }, [session?.user?.email]);
+
+  async function loadAccountData(email) {
+    await Promise.all([loadOrCreateUserProfile(email), loadPurchaseHistory(email)]);
+  }
 
   async function loadOrCreateUserProfile(email) {
     if (!authSupabase) return;
@@ -98,6 +107,8 @@ export default function AccountPage() {
       ...emptyProfile,
       email,
       username: email.split("@")[0],
+      first_name: session?.user?.user_metadata?.full_name?.split(" ")[0] || "",
+      last_name: session?.user?.user_metadata?.full_name?.split(" ").slice(1).join(" ") || "",
       purchase_count: 0,
     };
 
@@ -119,6 +130,50 @@ export default function AccountPage() {
     });
   }
 
+  async function loadPurchaseHistory(email) {
+    setOrdersLoading(true);
+
+    const clients = [authSupabase, supabase].filter(Boolean);
+    let loadedOrders = null;
+    let lastErr = null;
+
+    for (const client of clients) {
+      const { data, error: ordersError } = await client
+        .from(ORDERS_TABLE)
+        .select("order_id, item, amount, quantity, status, created_at")
+        .eq("email", email)
+        .order("created_at", { ascending: false });
+
+      if (!ordersError) {
+        loadedOrders = data || [];
+        lastErr = null;
+        break;
+      }
+
+      lastErr = ordersError;
+    }
+
+    if (lastErr) {
+      setError(`Could not load purchase history: ${lastErr.message}`);
+      setOrders([]);
+      setOrdersLoading(false);
+      return;
+    }
+
+    setOrders(loadedOrders || []);
+    setOrdersLoading(false);
+  }
+
+  function parseItems(item) {
+    if (!item) return [];
+    try {
+      const parsed = typeof item === "string" ? JSON.parse(item) : item;
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  }
+
   async function onSignIn(e) {
     e.preventDefault();
     if (!authSupabase) return;
@@ -135,7 +190,7 @@ export default function AccountPage() {
     if (signInError) {
       setError(signInError.message);
     } else {
-      setMessage("Signed in successfully.");
+      setMessage("");
     }
 
     setSubmitting(false);
@@ -200,9 +255,10 @@ export default function AccountPage() {
     if (signOutError) {
       setError(signOutError.message);
     } else {
-      setMessage("Signed out.");
+      setMessage("");
       setAuthForm({ email: "", password: "" });
       setProfile(emptyProfile);
+      setOrders([]);
     }
 
     setSubmitting(false);
@@ -310,71 +366,127 @@ export default function AccountPage() {
             </button>
           </section>
         ) : (
-          <section className="account-card">
-            <p className="account-info">Signed in as {userEmail}</p>
+          <>
+            <section className="account-card">
+              <div className="account-head">
+                <p className="account-info">Signed in as {userEmail}</p>
+                <button type="button" className="signout-btn" onClick={onSignOut} disabled={submitting}>
+                  Sign Out
+                </button>
+              </div>
 
-            <form className="account-form" onSubmit={onSaveProfile}>
-              <label>
-                First name
-                <input
-                  type="text"
-                  value={profile.first_name || ""}
-                  onChange={(e) => setProfile((s) => ({ ...s, first_name: e.target.value }))}
-                />
-              </label>
-              <label>
-                Last name
-                <input
-                  type="text"
-                  value={profile.last_name || ""}
-                  onChange={(e) => setProfile((s) => ({ ...s, last_name: e.target.value }))}
-                />
-              </label>
-              <label>
-                Username
-                <input
-                  type="text"
-                  value={profile.username || ""}
-                  onChange={(e) => setProfile((s) => ({ ...s, username: e.target.value }))}
-                />
-              </label>
-              <label>
-                Phone
-                <input
-                  type="tel"
-                  value={profile.phone || ""}
-                  onChange={(e) => setProfile((s) => ({ ...s, phone: e.target.value }))}
-                />
-              </label>
-              <label>
-                Gender
-                <input
-                  type="text"
-                  value={profile.gender || ""}
-                  onChange={(e) => setProfile((s) => ({ ...s, gender: e.target.value }))}
-                />
-              </label>
-              <label>
-                Purchase count
-                <input
-                  type="number"
-                  min="0"
-                  value={profile.purchase_count ?? 0}
-                  onChange={(e) => setProfile((s) => ({ ...s, purchase_count: e.target.value }))}
-                />
-              </label>
-              <button type="submit" disabled={submitting}>
-                {submitting ? "Saving..." : "Save Profile"}
-              </button>
-            </form>
+              <form className="account-form" onSubmit={onSaveProfile}>
+                <label>
+                  First name
+                  <input
+                    type="text"
+                    value={profile.first_name || ""}
+                    onChange={(e) => setProfile((s) => ({ ...s, first_name: e.target.value }))}
+                  />
+                </label>
+                <label>
+                  Last name
+                  <input
+                    type="text"
+                    value={profile.last_name || ""}
+                    onChange={(e) => setProfile((s) => ({ ...s, last_name: e.target.value }))}
+                  />
+                </label>
+                <label>
+                  Username
+                  <input
+                    type="text"
+                    value={profile.username || ""}
+                    onChange={(e) => setProfile((s) => ({ ...s, username: e.target.value }))}
+                  />
+                </label>
+                <label>
+                  Phone
+                  <input
+                    type="tel"
+                    value={profile.phone || ""}
+                    onChange={(e) => setProfile((s) => ({ ...s, phone: e.target.value }))}
+                  />
+                </label>
+                <label>
+                  Gender
+                  <input
+                    type="text"
+                    value={profile.gender || ""}
+                    onChange={(e) => setProfile((s) => ({ ...s, gender: e.target.value }))}
+                  />
+                </label>
+                <label>
+                  Purchase count
+                  <input
+                    type="number"
+                    min="0"
+                    value={profile.purchase_count ?? 0}
+                    onChange={(e) => setProfile((s) => ({ ...s, purchase_count: e.target.value }))}
+                  />
+                </label>
+                <button type="submit" disabled={submitting}>
+                  {submitting ? "Saving..." : "Save Profile"}
+                </button>
+              </form>
+            </section>
 
-            <button type="button" className="signout-btn" onClick={onSignOut} disabled={submitting}>
-              Sign Out
-            </button>
-          </section>
+            <section className="account-card account-card--history">
+              <h2 className="account-section-title">Purchase History</h2>
+
+              {ordersLoading ? <p className="account-info">Loading purchases...</p> : null}
+
+              {!ordersLoading && orders.length === 0 ? (
+                <p className="account-info">No purchases yet.</p>
+              ) : null}
+
+              {!ordersLoading && orders.length > 0 ? (
+                <ul className="order-list">
+                  {orders.map((order) => {
+                    const items = parseItems(order.item);
+                    return (
+                      <li key={order.order_id} className="order-item">
+                        <div className="order-top-row">
+                          <p className="order-id">Order {order.order_id}</p>
+                          <p className="order-status">{String(order.status || "pending").toUpperCase()}</p>
+                        </div>
+
+                        <p className="order-meta">
+                          Qty: {order.quantity || 0} | Amount: R {Number(order.amount || 0).toLocaleString("en-ZA")}
+                        </p>
+
+                        <p className="order-meta">
+                          {order.created_at
+                            ? new Date(order.created_at).toLocaleString("en-ZA", {
+                                year: "numeric",
+                                month: "short",
+                                day: "numeric",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })
+                            : "Date unavailable"}
+                        </p>
+
+                        {items.length > 0 ? (
+                          <ul className="order-products">
+                            {items.slice(0, 4).map((item, index) => (
+                              <li key={`${order.order_id}-${item.key || index}`}>
+                                {(item.brand || "").trim()} {(item.name || "Item").trim()} x{item.qty || item.quantity || 1}
+                              </li>
+                            ))}
+                            {items.length > 4 ? <li>+{items.length - 4} more item(s)</li> : null}
+                          </ul>
+                        ) : null}
+                      </li>
+                    );
+                  })}
+                </ul>
+              ) : null}
+            </section>
+          </>
         )}
 
-        {message ? <p className="account-message">{message}</p> : null}
+        {message && (session || mode === "signup") ? <p className="account-message">{message}</p> : null}
         {error ? <p className="account-error">{error}</p> : null}
       </div>
     </main>

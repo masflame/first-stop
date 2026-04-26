@@ -49,7 +49,7 @@ import pumaBlue from "../assets/display/puma-top view-blue surface.jpg";
 import uggWall from "../assets/display/ugg-against wall-vertical.jpg";
 import uggBack from "../assets/display/ugg-back-closeup.jpg";
 
-const HOME_SECTION_ITEM_LIMIT = 9;
+const HOME_SECTION_ITEM_LIMIT = 10;
 
 export default function HomePage() {
   // Helper: check if a product image path is for sneakers/shoes
@@ -193,7 +193,6 @@ export default function HomePage() {
         title="THE STREETWEAR SELECTION"
         viewAllLink="/collections/sale"
         mobileLayout="row"
-        desktopColumns={3}
       />
 
       <ProductGrid
@@ -201,7 +200,6 @@ export default function HomePage() {
         title="NEW ARRIVALS"
         viewAllLink="/collections/new"
         mobileLayout="row"
-        desktopColumns={3}
       />
 
       {/* ── EDITORIAL 1: Nike - Force of Nature ── */}
@@ -282,7 +280,6 @@ export default function HomePage() {
         title="BEST SELLERS"
         viewAllLink="/collections/all"
         mobileLayout="row"
-        desktopColumns={3}
       />
 
       {/* ── EDITORIAL 3: New Balance - Venture Beyond ── */}
@@ -353,7 +350,6 @@ export default function HomePage() {
           title="FEATURED JORDANS"
           viewAllLink="/collections/jordan"
           mobileLayout="row"
-          desktopColumns={3}
         />
       )}
 
@@ -438,7 +434,6 @@ export default function HomePage() {
             title="TRENDING NOW"
             viewAllLink="/collections/new"
             mobileLayout="row"
-            desktopColumns={3}
           />
         </div>
       )}

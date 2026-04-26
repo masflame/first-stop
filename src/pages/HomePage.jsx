@@ -49,6 +49,8 @@ import pumaBlue from "../assets/display/puma-top view-blue surface.jpg";
 import uggWall from "../assets/display/ugg-against wall-vertical.jpg";
 import uggBack from "../assets/display/ugg-back-closeup.jpg";
 
+const HOME_SECTION_ITEM_LIMIT = 9;
+
 export default function HomePage() {
   // Helper: check if a product image path is for sneakers/shoes
   const isSneakerImage = (p) =>
@@ -82,22 +84,22 @@ export default function HomePage() {
     daySeed
   );
   for (const p of restNew) {
-    if (newArrivals.length >= 8) break;
+    if (newArrivals.length >= HOME_SECTION_ITEM_LIMIT) break;
     // Keep brand diversity - max 2 per brand
     const brandCount = newArrivals.filter((x) => x.brand === p.brand).length;
     if (brandCount < 2) newArrivals.push(p);
   }
-  const newArrivalsSlice = newArrivals.slice(0, 8);
+  const newArrivalsSlice = newArrivals.slice(0, HOME_SECTION_ITEM_LIMIT);
 
   // Grand opening sales: keep category variety and always include this section on home.
   const salePool = seededShuffle(products.filter((p) => p.isSale), daySeed + 4242);
   const saleHighlights = [];
   for (const p of salePool) {
-    if (saleHighlights.length >= 8) break;
+    if (saleHighlights.length >= HOME_SECTION_ITEM_LIMIT) break;
     const brandCount = saleHighlights.filter((x) => x.brand === p.brand).length;
     if (brandCount < 2) saleHighlights.push(p);
   }
-  const saleHighlightsSlice = saleHighlights.slice(0, 8);
+  const saleHighlightsSlice = saleHighlights.slice(0, HOME_SECTION_ITEM_LIMIT);
 
   // Best sellers: pick top-priced products from each major brand (curated selection)
   const bestSellerBrands = ["NIKE", "ADIDAS", "JORDAN", "NEW BALANCE", "ASICS", "PUMA", "UGG"];
@@ -109,12 +111,12 @@ export default function HomePage() {
     if (brandProducts.length > 0) bestSellers.push(brandProducts[0]);
     if (brandProducts.length > 1) bestSellers.push(brandProducts[1]);
   }
-  const bestSellersSlice = bestSellers.slice(0, 8);
+  const bestSellersSlice = bestSellers.slice(0, HOME_SECTION_ITEM_LIMIT);
 
   // Featured Jordans: sneakers only
   const featuredJordans = products
     .filter((p) => p.brand === "JORDAN" && isSneakerImage(p))
-    .slice(0, 8);
+    .slice(0, HOME_SECTION_ITEM_LIMIT);
 
   // Trending: always AF1 + Jordan, rest shuffled daily (different seed offset)
   const trending = [];
@@ -127,11 +129,11 @@ export default function HomePage() {
     daySeed + 7777
   );
   for (const p of restTrending) {
-    if (trending.length >= 8) break;
+    if (trending.length >= HOME_SECTION_ITEM_LIMIT) break;
     const brandCount = trending.filter((x) => x.brand === p.brand).length;
     if (brandCount < 2) trending.push(p);
   }
-  const trendingSlice = trending.slice(0, 8);
+  const trendingSlice = trending.slice(0, HOME_SECTION_ITEM_LIMIT);
 
   // Brand tiles for "Shop by Brand" section - prefer sneaker images
   const brandTiles = bestSellerBrands.map((brand) => {
@@ -159,7 +161,7 @@ export default function HomePage() {
       url: getCanonicalUrl("/"),
     },
     buildBreadcrumbSchema([{ name: "Home", path: "/" }]),
-    buildItemListSchema(newArrivalsSlice.slice(0, 8), "New Arrivals", "/"),
+    buildItemListSchema(newArrivalsSlice.slice(0, HOME_SECTION_ITEM_LIMIT), "New Arrivals", "/"),
   ];
 
   return (
@@ -191,6 +193,7 @@ export default function HomePage() {
         title="THE STREETWEAR SELECTION"
         viewAllLink="/collections/sale"
         mobileLayout="row"
+        desktopColumns={3}
       />
 
       <ProductGrid
@@ -198,6 +201,7 @@ export default function HomePage() {
         title="NEW ARRIVALS"
         viewAllLink="/collections/new"
         mobileLayout="row"
+        desktopColumns={3}
       />
 
       {/* ── EDITORIAL 1: Nike - Force of Nature ── */}
@@ -278,6 +282,7 @@ export default function HomePage() {
         title="BEST SELLERS"
         viewAllLink="/collections/all"
         mobileLayout="row"
+        desktopColumns={3}
       />
 
       {/* ── EDITORIAL 3: New Balance - Venture Beyond ── */}
@@ -348,6 +353,7 @@ export default function HomePage() {
           title="FEATURED JORDANS"
           viewAllLink="/collections/jordan"
           mobileLayout="row"
+          desktopColumns={3}
         />
       )}
 
@@ -432,6 +438,7 @@ export default function HomePage() {
             title="TRENDING NOW"
             viewAllLink="/collections/new"
             mobileLayout="row"
+            desktopColumns={3}
           />
         </div>
       )}

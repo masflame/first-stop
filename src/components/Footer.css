@@ -289,3 +289,111 @@
     gap: 22px;
   }
 }
+
+/* Admin Gateway Modal */
+.admin-gateway-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.88);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.admin-gateway-modal {
+  background: #111;
+  border: 1px solid #2a2a2a;
+  padding: 40px 32px 36px;
+  width: 100%;
+  max-width: 400px;
+  position: relative;
+}
+
+.admin-gateway-close {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  background: none;
+  border: none;
+  color: #666;
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+}
+
+.admin-gateway-close:hover {
+  color: #fff;
+}
+
+.admin-gateway-title {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: #fff;
+  margin: 0 0 28px;
+  text-transform: uppercase;
+}
+
+.admin-gateway-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.admin-gateway-field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.admin-gateway-field label {
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  color: #777;
+  text-transform: uppercase;
+}
+
+.admin-gateway-field input {
+  background: transparent;
+  border: 1px solid #333;
+  color: #fff;
+  padding: 12px 14px;
+  font-size: 14px;
+  font-family: inherit;
+  outline: none;
+  -moz-appearance: textfield;
+}
+
+.admin-gateway-field input::-webkit-outer-spin-button,
+.admin-gateway-field input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.admin-gateway-field input:focus {
+  border-color: #555;
+}
+
+.admin-gateway-field input::placeholder {
+  color: #444;
+}
+
+.admin-gateway-submit {
+  margin-top: 6px;
+  background: #fff;
+  color: #000;
+  border: 1px solid #fff;
+  padding: 14px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.admin-gateway-submit:hover {
+  background: transparent;
+  color: #fff;
+}

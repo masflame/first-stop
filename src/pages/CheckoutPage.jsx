@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { ChevronLeft, Lock, Truck, ShieldCheck } from "lucide-react";
 import { useBag } from "../context/BagContext";
 import { resolveImage } from "../utils/imageResolver";
@@ -20,7 +20,13 @@ const FREE_SHIPPING_THRESHOLD = 1500;
 const GUEST_CHECKOUT_MAX_TOTAL = 50000;
 
 export default function CheckoutPage() {
-  const { items, totalPrice } = useBag();
+  const { items: bagItems, totalPrice: bagTotal } = useBag();
+  const location = useLocation();
+  const adminItem = location.state?.adminItem ?? null;
+  const items = adminItem
+    ? [{ key: "admin-custom", product: { name: adminItem.name, price: adminItem.amount, brand: "" }, size: "N/A", quantity: 1 }]
+    : bagItems;
+  const totalPrice = adminItem ? adminItem.amount : bagTotal;
   const [step, setStep] = useState("info"); // info | payment
   const [session, setSession] = useState(null);
   const [authReady, setAuthReady] = useState(false);

@@ -17,7 +17,7 @@ function formatPrice(price) {
 
 const SHIPPING_RATE = 150;
 const FREE_SHIPPING_THRESHOLD = 1500;
-const GUEST_CHECKOUT_MAX_TOTAL = 5000;
+const GUEST_CHECKOUT_MAX_TOTAL = 50000;
 
 export default function CheckoutPage() {
   const { items, totalPrice } = useBag();

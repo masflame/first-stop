@@ -322,8 +322,8 @@ export default function CheckoutPage() {
         phone: form.phone.trim(),
       };
 
-      // tokenize disabled - requires PayFast account approval for tokenization feature
-      const data = buildPayfastData({ items: payfastItems, customer, paymentId, tokenize: false });
+      // Pass tokenize: true for signed-in customers so PayFast generates a card token
+      const data = buildPayfastData({ items: payfastItems, customer, paymentId, tokenize: isSignedIn });
 
       const description = items
         .map((p) => `${p.product.brand} ${p.product.name} x${p.quantity}`)

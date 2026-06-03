@@ -7,6 +7,7 @@ import { buildPayfastData, PAYFAST_URL } from "../utils/payfast";
 import { authSupabase } from "../utils/authSupabase";
 import { supabase } from "../utils/supabase";
 import { formatSizeDisplay } from "../utils/sizeFormat";
+import SavedCardBadge from "../components/SavedCardBadge";
 import logoName from "../assets/SD-name.png";
 import Seo from "../components/Seo";
 import "./CheckoutPage.css";
@@ -38,6 +39,10 @@ export default function CheckoutPage() {
   });
   const [errors, setErrors] = useState({});
   const [processing, setProcessing] = useState(false);
+  const [savedCard, setSavedCard] = useState(null);
+  const [savedCardLoading, setSavedCardLoading] = useState(false);
+  const [useNewCard, setUseNewCard] = useState(false);
+  const [chargeError, setChargeError] = useState(null);
 
   const isSignedIn = Boolean(session?.user?.email);
   const showCheckoutChoice = authReady && !isSignedIn && checkoutMode === "unknown";
@@ -99,6 +104,22 @@ export default function CheckoutPage() {
     setCheckoutMode("unknown");
   }, [allowGuestCheckout, checkoutMode, isSignedIn]);
 
+  // Fetch saved card for signed-in customers
+  useEffect(() => {
+    if (!isSignedIn || !session?.access_token) {
+      setSavedCard(null);
+      return;
+    }
+    setSavedCardLoading(true);
+    fetch("/api/payfast-saved-card", {
+      headers: { Authorization: `Bearer ${session.access_token}` },
+    })
+      .then((r) => r.json())
+      .then((data) => setSavedCard(data.savedCard || null))
+      .catch(() => setSavedCard(null))
+      .finally(() => setSavedCardLoading(false));
+  }, [isSignedIn, session?.access_token]);
+
   if (items.length === 0) {
     return (
       <main className="checkout-page">
@@ -142,6 +163,129 @@ export default function CheckoutPage() {
     if (validateInfo()) setStep("payment");
   };
 
+  // Silent charge using a saved card token — no PayFast redirect needed
+  const handleTokenCharge = async (e) => {
+    e.preventDefault();
+    if (!validateInfo()) { setStep("info"); return; }
+
+    setProcessing(true);
+    setChargeError(null);
+
+    const paymentId = `GM-${Date.now()}`;
+    const customer = {
+      firstName: form.firstName.trim(),
+      lastName: form.lastName.trim(),
+      email: form.email.trim(),
+      phone: form.phone.trim(),
+    };
+    const description = items
+      .map((p) => `${p.product.brand} ${p.product.name} x${p.quantity}`)
+      .join(", ");
+    const itemName =
+      items.length === 1
+        ? items[0].product.name
+        : `Order #${paymentId} (${items.length} items)`;
+
+    try {
+      const { error: orderInsertError } = await supabase.from("Orders").insert([
+        {
+          order_id: paymentId,
+          first_name: customer.firstName,
+          last_name: customer.lastName,
+          email: customer.email,
+          contact: customer.phone || "",
+          item: JSON.stringify(
+            items.map((i) => ({
+              key: i.key,
+              name: i.product.name,
+              brand: i.product.brand,
+              size: i.size,
+              qty: i.quantity,
+              price: i.product.salePrice || i.product.price,
+            }))
+          ),
+          description,
+          quantity: items.reduce((sum, i) => sum + i.quantity, 0),
+          amount: String(totalPrice),
+          country: form.country,
+          street_address: form.address,
+          apartment: form.apartment || "",
+          city: form.city,
+          province: form.province,
+          postal_code: form.postalCode,
+          company: "",
+          device: navigator.userAgent,
+          status: "pending",
+        },
+      ]);
+
+      if (orderInsertError) throw orderInsertError;
+
+      const res = await fetch("/api/payfast-charge", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({ amount: total, item_name: itemName, order_id: paymentId }),
+      });
+
+      const result = await res.json();
+
+      if (res.status === 404 && result.error === "NO_SAVED_CARD") {
+        // Token disappeared — fall back to normal PayFast checkout
+        setSavedCard(null);
+        setUseNewCard(true);
+        setProcessing(false);
+        return;
+      }
+
+      if (!res.ok || !result.success) {
+        setChargeError("Payment failed. Please try again or use a different card.");
+        setProcessing(false);
+        return;
+      }
+
+      // Save order summary to sessionStorage so the success page can render it
+      const pendingOrder = {
+        paymentId,
+        status: "paid",
+        customer,
+        items: items.map((i) => ({
+          key: i.key,
+          name: i.product.name,
+          brand: i.product.brand,
+          size: i.size,
+          quantity: i.quantity,
+          unitPrice: i.product.salePrice || i.product.price,
+          image: i.product.image,
+        })),
+        subtotal: totalPrice,
+        shipping: shippingCost,
+        total,
+        createdAt: new Date().toISOString(),
+      };
+      sessionStorage.setItem("pending_payfast_order", JSON.stringify(pendingOrder));
+      sessionStorage.setItem("gm_pending_order", JSON.stringify(pendingOrder));
+
+      window.location.href = "/payment/success";
+    } catch {
+      setChargeError("Unable to process payment. Please try again.");
+      setProcessing(false);
+    }
+  };
+
+  const handleRemoveSavedCard = async () => {
+    if (!session?.access_token) return;
+    // Delete the token record via Supabase (RLS allows the user to delete their own)
+    await supabase
+      .from("customer_payment_tokens")
+      .delete()
+      .eq("email", form.email.trim().toLowerCase());
+    setSavedCard(null);
+    setUseNewCard(false);
+  };
+
   const handlePayfastCheckout = async (e) => {
     e.preventDefault();
 
@@ -177,7 +321,8 @@ export default function CheckoutPage() {
         phone: form.phone.trim(),
       };
 
-      const data = buildPayfastData({ items: payfastItems, customer, paymentId });
+      // Pass tokenize: true for signed-in customers so PayFast generates a card token
+      const data = buildPayfastData({ items: payfastItems, customer, paymentId, tokenize: isSignedIn });
 
       const description = items
         .map((p) => `${p.product.brand} ${p.product.name} x${p.quantity}`)
@@ -440,7 +585,10 @@ export default function CheckoutPage() {
               )}
 
               {step === "payment" && (
-            <form className="checkout-form" onSubmit={handlePayfastCheckout}>
+            <form
+              className="checkout-form"
+              onSubmit={isSignedIn && savedCard && !useNewCard ? handleTokenCharge : handlePayfastCheckout}
+            >
               {/* Shipping summary */}
               <div className="checkout-info-summary">
                 <div className="checkout-info-row">
@@ -460,28 +608,48 @@ export default function CheckoutPage() {
               <h2 className="checkout-form__heading">
                 <Lock size={14} /> Payment
               </h2>
-              <p className="checkout-form__sub">You will be redirected to secure payment to complete your order.</p>
 
-              <div className="checkout-card-box">
-                <div className="checkout-card-box__header">
-                  <Lock size={16} />
-                  <span>Secure Payment</span>
+              {/* Saved card flow for returning signed-in customers */}
+              {isSignedIn && !savedCardLoading && savedCard && !useNewCard ? (
+                <>
+                  <p className="checkout-form__sub">Pay instantly with your saved card — no redirect required.</p>
+                  <SavedCardBadge
+                    card={savedCard}
+                    onRemove={handleRemoveSavedCard}
+                    onUseNew={() => setUseNewCard(true)}
+                  />
+                </>
+              ) : (
+                <p className="checkout-form__sub">You will be redirected to secure payment to complete your order.</p>
+              )}
+
+              {!isSignedIn || (!savedCard && !savedCardLoading) || useNewCard ? (
+                <div className="checkout-card-box">
+                  <div className="checkout-card-box__header">
+                    <Lock size={16} />
+                    <span>Secure Payment</span>
+                  </div>
+                  <p className="checkout-form__sub" style={{ margin: "0 0 4px" }}>
+                    Your order will be created and held while payment is being confirmed.
+                  </p>
+                  <p className="checkout-form__sub" style={{ marginBottom: 0 }}>
+                    After payment, you will come back to the store and see your updated order status automatically.
+                    {isSignedIn && (
+                      <strong> Your card will be saved for faster checkout next time.</strong>
+                    )}
+                  </p>
                 </div>
-                <p className="checkout-form__sub" style={{ margin: "0 0 4px" }}>
-                  Your order will be created and held while payment is being confirmed.
-                </p>
-                <p className="checkout-form__sub" style={{ marginBottom: 0 }}>
-                  After payment, you will come back to the store and see your updated order status automatically.
-                </p>
-              </div>
+              ) : null}
 
-              {errors.general && <span className="checkout-field__error">{errors.general}</span>}
+              {(errors.general || chargeError) && (
+                <span className="checkout-field__error">{chargeError || errors.general}</span>
+              )}
 
               <div className="checkout-form__actions">
                 <button type="button" className="checkout-back" onClick={() => setStep("info")}>
                   <ChevronLeft size={14} /> Back to details
                 </button>
-                <button type="submit" className="checkout-submit checkout-submit--pay" disabled={processing}>
+                <button type="submit" className="checkout-submit checkout-submit--pay" disabled={processing || savedCardLoading}>
                   {processing ? (
                     <span className="checkout-spinner" />
                   ) : (

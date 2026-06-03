@@ -56,7 +56,7 @@ function generateSignature(data) {
   return md5(pfOutput);
 }
 
-export function buildPayfastData({ items, customer, paymentId }) {
+export function buildPayfastData({ items, customer, paymentId, tokenize = false }) {
   if (!MERCHANT_ID || !MERCHANT_KEY) {
     throw new Error("Missing PayFast merchant credentials. Set VITE_PAYFAST_MERCHANT_ID and VITE_PAYFAST_MERCHANT_KEY.");
   }
@@ -83,6 +83,7 @@ export function buildPayfastData({ items, customer, paymentId }) {
     amount: amount.toFixed(2),
     item_name: itemName.slice(0, 100),
     item_description: itemDescription,
+    ...(tokenize ? { subscription_type: 2 } : {}),
   };
 
   data.signature = generateSignature(data);

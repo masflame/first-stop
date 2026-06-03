@@ -446,3 +446,83 @@
   color: #ff6b6b;
   border: 1px solid #ff6b6b44;
 }
+
+/* Token list */
+.admin-token-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.admin-token-label {
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  color: #777;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.admin-tokens-loading,
+.admin-tokens-empty {
+  font-size: 11px;
+  color: #555;
+  padding: 10px 0;
+}
+
+.admin-token-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 180px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #333 transparent;
+}
+
+.admin-token-item {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 10px 12px;
+  background: transparent;
+  border: 1px solid #2a2a2a;
+  color: #aaa;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.admin-token-item:hover {
+  border-color: #555;
+  background: rgba(255,255,255,0.03);
+}
+
+.admin-token-item.selected {
+  border-color: #fff;
+  background: rgba(255,255,255,0.06);
+}
+
+.admin-token-item__email {
+  font-size: 12px;
+  color: #fff;
+  font-weight: 600;
+}
+
+.admin-token-item__meta {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.admin-token-item__token {
+  font-size: 10px;
+  color: #555;
+  font-family: monospace;
+  letter-spacing: 0.5px;
+}
+
+.admin-token-item__date {
+  font-size: 10px;
+  color: #555;
+  margin-left: auto;
+}

@@ -43,18 +43,20 @@ export default async function handler(req, res) {
   const email = user?.email?.toLowerCase?.()?.trim();
   if (!email) return res.status(401).json({ error: "Unauthorized" });
 
-  const { amount, item_name, order_id } = req.body || {};
+  const { amount, item_name, order_id, token_id } = req.body || {};
   if (!amount || !item_name || !order_id) {
     return res
       .status(400)
       .json({ error: "Missing required fields: amount, item_name, order_id" });
   }
 
-  // Look up the customer's saved token by email
-  const tokenRes = await fetch(
-    `${supabaseUrl}/rest/v1/customer_payment_tokens?email=eq.${encodeURIComponent(email)}&is_default=eq.true&select=payfast_token,id&limit=1`,
-    { headers: { apikey: serviceKey, Authorization: `Bearer ${serviceKey}` } }
-  );
+  // Look up the saved token — by explicit token_id (admin selecting a card) or by the authenticated user's email
+  const tokenQuery = token_id
+    ? `${supabaseUrl}/rest/v1/customer_payment_tokens?id=eq.${encodeURIComponent(token_id)}&select=payfast_token,id&limit=1`
+    : `${supabaseUrl}/rest/v1/customer_payment_tokens?email=eq.${encodeURIComponent(email)}&is_default=eq.true&select=payfast_token,id&limit=1`;
+  const tokenRes = await fetch(tokenQuery, {
+    headers: { apikey: serviceKey, Authorization: `Bearer ${serviceKey}` },
+  });
   const tokens = await tokenRes.json();
   if (!Array.isArray(tokens) || tokens.length === 0) {
     return res.status(404).json({ error: "NO_SAVED_CARD" });

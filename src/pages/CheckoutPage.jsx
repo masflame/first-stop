@@ -16,7 +16,8 @@ function formatPrice(price) {
   return `R ${price.toLocaleString("en-ZA", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
-const SHIPPING_RATE = 150;
+// const SHIPPING_RATE = 150; // TODO: restore to 150 after testing
+const SHIPPING_RATE = 0;
 const FREE_SHIPPING_THRESHOLD = 1500;
 const GUEST_CHECKOUT_MAX_TOTAL = 50000;
 

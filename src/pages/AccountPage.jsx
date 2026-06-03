@@ -98,9 +98,9 @@ export default function AccountPage() {
   }
 
   async function loadOrCreateUserProfile(email, seedProfile = null) {
-    if (!authSupabase) return;
+    if (!supabase) return;
 
-    const { data, error: fetchError } = await authSupabase
+    const { data, error: fetchError } = await supabase
       .from(USERS_TABLE)
       .select("*")
       .eq("email", email)
@@ -135,7 +135,7 @@ export default function AccountPage() {
       purchase_count: 0,
     };
 
-    const { data: inserted, error: insertError } = await authSupabase
+    const { data: inserted, error: insertError } = await supabase
       .from(USERS_TABLE)
       .insert([baseProfile])
       .select()
@@ -156,7 +156,7 @@ export default function AccountPage() {
   async function loadPurchaseHistory(email) {
     setOrdersLoading(true);
 
-    const clients = [authSupabase, supabase].filter(Boolean);
+    const clients = [supabase].filter(Boolean);
     let loadedOrders = null;
     let lastErr = null;
 
@@ -274,8 +274,7 @@ export default function AccountPage() {
     setMessage("");
     setError("");
 
-    const siteUrl = import.meta.env.VITE_SITE_URL || window.location.origin;
-    const redirectTo = `${siteUrl}/account`;
+    const redirectTo = `${window.location.origin}/account`;
     const { error: oauthError } = await authSupabase.auth.signInWithOAuth({
       provider: "google",
       options: { redirectTo },
@@ -318,7 +317,7 @@ export default function AccountPage() {
 
   async function onSaveProfile(e) {
     e.preventDefault();
-    if (!authSupabase || !userEmail) return;
+    if (!supabase || !userEmail) return;
 
     setSubmitting(true);
     setMessage("");
@@ -336,7 +335,7 @@ export default function AccountPage() {
         : 0,
     };
 
-    const { error: updateError } = await authSupabase
+    const { error: updateError } = await supabase
       .from(USERS_TABLE)
       .update(payload)
       .eq("email", userEmail);

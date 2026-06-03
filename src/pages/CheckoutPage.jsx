@@ -362,6 +362,7 @@ export default function CheckoutPage() {
       ]);
 
       if (orderInsertError) {
+        console.error("[Checkout] Orders insert error:", orderInsertError);
         throw orderInsertError;
       }
 
@@ -402,11 +403,12 @@ export default function CheckoutPage() {
 
       document.body.appendChild(formEl);
       formEl.submit();
-    } catch {
+    } catch (err) {
+      console.error("[Checkout] handlePayfastCheckout error:", err);
       setProcessing(false);
       setErrors((prev) => ({
         ...prev,
-        general: "Unable to start secure checkout. Please try again.",
+        general: `Unable to start secure checkout: ${err?.message || "Please try again."}`,
       }));
     }
   };

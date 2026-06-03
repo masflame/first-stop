@@ -393,7 +393,56 @@
   transition: background 0.2s, color 0.2s;
 }
 
-.admin-gateway-submit:hover {
+.admin-gateway-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.admin-gateway-submit:hover:not(:disabled) {
   background: transparent;
   color: #fff;
+}
+
+.admin-gateway-toggle {
+  display: flex;
+  gap: 0;
+  margin-bottom: 18px;
+  border: 1px solid #444;
+}
+
+.admin-gateway-toggle__btn {
+  flex: 1;
+  padding: 8px 0;
+  background: transparent;
+  color: #aaa;
+  border: none;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.admin-gateway-toggle__btn.active {
+  background: #fff;
+  color: #000;
+}
+
+.admin-gateway-result {
+  font-size: 11px;
+  padding: 10px;
+  margin-bottom: 6px;
+  border-radius: 2px;
+}
+
+.admin-gateway-result.ok {
+  background: rgba(0,200,100,0.15);
+  color: #4caf7d;
+  border: 1px solid #4caf7d44;
+}
+
+.admin-gateway-result.err {
+  background: rgba(255,80,80,0.1);
+  color: #ff6b6b;
+  border: 1px solid #ff6b6b44;
 }

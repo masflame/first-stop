@@ -69,6 +69,7 @@ export default function Footer() {
   const [savedTokens, setSavedTokens] = useState([]);
   const [tokensLoading, setTokensLoading] = useState(false);
   const [selectedTokenId, setSelectedTokenId] = useState(null);
+  const [adminKey, setAdminKey] = useState("");
 
   const handleCopyrightClick = () => {
     clearTimeout(clickResetTimer.current);
@@ -93,17 +94,22 @@ export default function Footer() {
     setSavedTokens([]);
     setTokensLoading(false);
     setSelectedTokenId(null);
+    setAdminKey("");
   };
 
-  const fetchSavedTokens = async () => {
+  const fetchSavedTokens = async (key) => {
     setTokensLoading(true);
     setSavedTokens([]);
     setSelectedTokenId(null);
     try {
-      const { data: { session } } = await authSupabase.auth.getSession();
-      if (!session?.access_token) { setTokensLoading(false); return; }
+      let bearer = key;
+      if (!bearer) {
+        const { data: { session } } = await authSupabase.auth.getSession();
+        bearer = session?.access_token || "";
+      }
+      if (!bearer) { setTokensLoading(false); return; }
       const res = await fetch("/api/admin-tokens", {
-        headers: { Authorization: `Bearer ${session.access_token}` },
+        headers: { Authorization: `Bearer ${bearer}` },
       });
       const data = await res.json().catch(() => ({}));
       const list = Array.isArray(data.tokens) ? data.tokens : [];
@@ -120,16 +126,20 @@ export default function Footer() {
     setAdminLoading(true);
     setAdminResult(null);
     try {
-      const { data: { session } } = await authSupabase.auth.getSession();
-      if (!session?.access_token) {
-        setAdminResult({ ok: false, message: "Not signed in. Sign in first." });
+      let bearer = adminKey.trim();
+      if (!bearer) {
+        const { data: { session } } = await authSupabase.auth.getSession();
+        bearer = session?.access_token || "";
+      }
+      if (!bearer) {
+        setAdminResult({ ok: false, message: "Enter the admin key or sign in first." });
         setAdminLoading(false);
         return;
       }
       const orderId = `GM-${Date.now()}`;
       const res = await fetch("/api/payfast-charge", {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` },
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${bearer}` },
         body: JSON.stringify({ amount, item_name: adminItemName.trim(), order_id: orderId, token_id: selectedTokenId }),
       });
       const result = await res.json().catch(() => ({}));
@@ -252,6 +262,15 @@ export default function Footer() {
             <button type="button" className="admin-gateway-close" onClick={closeAdmin} aria-label="Close">&times;</button>
             <h2 className="admin-gateway-title">Custom Order</h2>
 
+            <input
+              type="password"
+              placeholder="Admin key"
+              value={adminKey}
+              onChange={e => setAdminKey(e.target.value)}
+              className="admin-gateway-input"
+              style={{ width: "100%", marginBottom: "12px" }}
+            />
+
             <div className="admin-gateway-toggle">
               <button type="button"
                 className={`admin-gateway-toggle__btn${adminMode === "normal" ? " active" : ""}`}
@@ -260,7 +279,7 @@ export default function Footer() {
               </button>
               <button type="button"
                 className={`admin-gateway-toggle__btn${adminMode === "recurring" ? " active" : ""}`}
-                onClick={() => { setAdminMode("recurring"); setAdminResult(null); fetchSavedTokens(); }}>
+                onClick={() => { setAdminMode("recurring"); setAdminResult(null); fetchSavedTokens(adminKey.trim() || undefined); }}>
                 Charge Saved Card
               </button>
             </div>

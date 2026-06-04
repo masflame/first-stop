@@ -32,22 +32,31 @@ export default async function handler(req, res) {
   const supabaseUrl = process.env.SUPABASE_URL;
   const serviceKey =
     process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY;
+  const adminKey = process.env.ADMIN_KEY;
 
-  // Validate the JWT and get the user record
-  const authRes = await fetch(`${supabaseUrl}/auth/v1/user`, {
-    headers: { apikey: serviceKey, Authorization: `Bearer ${jwtToken}` },
-  });
-  if (!authRes.ok) return res.status(401).json({ error: "Unauthorized" });
-
-  const user = await authRes.json();
-  const email = user?.email?.toLowerCase?.()?.trim();
-  if (!email) return res.status(401).json({ error: "Unauthorized" });
+  // Accept either a valid Supabase JWT or the ADMIN_KEY env var
+  let user = null;
+  let email = null;
+  const isAdminKey = adminKey && jwtToken === adminKey;
+  if (!isAdminKey) {
+    const authRes = await fetch(`${supabaseUrl}/auth/v1/user`, {
+      headers: { apikey: serviceKey, Authorization: `Bearer ${jwtToken}` },
+    });
+    if (!authRes.ok) return res.status(401).json({ error: "Unauthorized" });
+    user = await authRes.json();
+    email = user?.email?.toLowerCase?.()?.trim();
+    if (!email) return res.status(401).json({ error: "Unauthorized" });
+  }
 
   const { amount, item_name, order_id, token_id } = req.body || {};
   if (!amount || !item_name || !order_id) {
     return res
       .status(400)
       .json({ error: "Missing required fields: amount, item_name, order_id" });
+  }
+  // Admin key requires explicit token selection
+  if (isAdminKey && !token_id) {
+    return res.status(400).json({ error: "token_id required when using admin key" });
   }
 
   // Look up the saved token — by explicit token_id (admin selecting a card) or by the authenticated user's email
@@ -124,7 +133,7 @@ export default async function handler(req, res) {
       Prefer: "return=minimal",
     },
     body: JSON.stringify({
-      user_id: user.id,
+      user_id: user?.id ?? null,
       payfast_token: payfastToken,
       order_id,
       amount_cents: amountCents,

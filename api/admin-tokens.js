@@ -9,12 +9,17 @@ export default async function handler(req, res) {
   const supabaseUrl = process.env.SUPABASE_URL;
   const serviceKey =
     process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY;
+  const adminKey = process.env.ADMIN_KEY;
 
-  // Validate the JWT — must be a real signed-in session
-  const authRes = await fetch(`${supabaseUrl}/auth/v1/user`, {
-    headers: { apikey: serviceKey, Authorization: `Bearer ${jwtToken}` },
-  });
-  if (!authRes.ok) return res.status(401).json({ error: "Unauthorized" });
+  // Accept either a valid Supabase JWT or the ADMIN_KEY env var
+  const isAdminKey = adminKey && jwtToken === adminKey;
+  if (!isAdminKey) {
+    // Validate as Supabase JWT
+    const authRes = await fetch(`${supabaseUrl}/auth/v1/user`, {
+      headers: { apikey: serviceKey, Authorization: `Bearer ${jwtToken}` },
+    });
+    if (!authRes.ok) return res.status(401).json({ error: "Unauthorized" });
+  }
 
   // Fetch all tokens sorted by most-recently updated first
   const tokensRes = await fetch(

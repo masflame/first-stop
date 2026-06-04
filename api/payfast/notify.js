@@ -67,9 +67,11 @@ export default async function handler(req, res) {
     const passphrase = process.env.PAYFAST_PASSPHRASE || "";
     const sigString = buildSignatureString(body, passphrase);
     const expected = md5hex(sigString);
-    console.log("[ITN] sig check — received:", body.signature, "expected:", expected);
+    console.log("[ITN] passphrase length:", passphrase.length, "| passphrase set:", !!passphrase);
+    console.log("[ITN] sig check — received:", body.signature, "| expected:", expected);
+    console.log("[ITN] full sigstring:", sigString);
     if (!body.signature || expected !== body.signature) {
-      console.error("[ITN] Signature mismatch — sigstring:", sigString.slice(0, 200));
+      console.error("[ITN] Signature mismatch");
       return res.status(400).send("Invalid signature");
     }
 

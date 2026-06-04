@@ -106,8 +106,9 @@ export default async function handler(req, res) {
 
     const pfText = await pfRes.text().catch(() => "");
     try { pfResult = JSON.parse(pfText); } catch { pfResult = { raw: pfText }; }
-    // A real charge requires HTTP 200 AND data.response === true
-    chargeStatus = pfRes.ok && pfResult?.data?.response === true ? "success" : "failed";
+    // A real charge requires HTTP 200 AND data.response truthy (PayFast returns boolean true or string "true")
+    const pfResp = pfResult?.data?.response;
+    chargeStatus = pfRes.ok && (pfResp === true || pfResp === "true") ? "success" : "failed";
     console.log("[CHARGE] PayFast status:", pfRes.status, "body:", JSON.stringify(pfResult));
   } catch (err) {
     console.error("[CHARGE] PayFast API error:", err);

@@ -5,7 +5,7 @@ import { authSupabase } from "../utils/authSupabase";
 import { supabase } from "../utils/supabase";
 import "./AccountPage.css";
 
-const USERS_TABLE = "ShoeDistrict_Users";
+const USERS_TABLE = "Users";
 const ORDERS_TABLE = "Orders";
 
 const emptyProfile = {

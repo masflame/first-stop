@@ -111,7 +111,7 @@ export default async function handler(req, res) {
     // Save PayFast card token for future recurring/adhoc charges
     if (token && email_address && payment_status === "COMPLETE") {
       const email = email_address.toLowerCase().trim();
-      const tokenRes = await fetch(`${supabaseUrl}/rest/v1/customer_payment_tokens`, {
+      const tokenRes = await fetch(`${supabaseUrl}/rest/v1/customer_payment_tokens?on_conflict=email`, {
         method: "POST",
         headers: {
           apikey: serviceKey,

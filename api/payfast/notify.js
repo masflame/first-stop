@@ -27,8 +27,7 @@ function buildSignatureString(body, passphrase = "") {
       ([key, val]) =>
         key !== "signature" &&
         val !== undefined &&
-        val !== null &&
-        String(val).trim() !== ""
+        val !== null
     )
     .map(([key, val]) => `${phpUrlencode(key)}=${phpUrlencode(String(val).trim())}`)
     .join("&");

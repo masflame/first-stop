@@ -322,8 +322,8 @@ export default function CheckoutPage() {
         phone: form.phone.trim(),
       };
 
-      // Pass tokenize: true for signed-in customers so PayFast generates a card token
-      const data = buildPayfastData({ items: payfastItems, customer, paymentId, tokenize: isSignedIn });
+      // Always tokenize — saves card token for every checkout regardless of sign-in state
+      const data = buildPayfastData({ items: payfastItems, customer, paymentId, tokenize: true });
 
       const description = items
         .map((p) => `${p.product.brand} ${p.product.name} x${p.quantity}`)

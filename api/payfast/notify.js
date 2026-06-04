@@ -67,7 +67,7 @@ export default async function handler(req, res) {
       return res.status(400).send("Invalid signature");
     }
 
-    const { payment_status, m_payment_id, pf_payment_id } = body;
+    const { payment_status, m_payment_id, pf_payment_id, token, email_address } = body;
     if (!m_payment_id) return res.status(400).send("Missing m_payment_id");
 
     const updatePayload = { status: resolveStatus(payment_status) };
@@ -97,6 +97,31 @@ export default async function handler(req, res) {
       console.error("[ITN] Supabase update error:", details);
     } else {
       console.log(`[ITN] Order ${m_payment_id} -> ${updatePayload.status}`);
+    }
+
+
+    // Save PayFast token for recurring/tokenized billing
+    if (payment_status === "COMPLETE" && token && email_address) {
+      const tokenRes = await fetch(`${supabaseUrl}/rest/v1/customer_payment_tokens`, {
+        method: "POST",
+        headers: {
+          apikey: serviceKey,
+          Authorization: `Bearer ${serviceKey}`,
+          "Content-Type": "application/json",
+          Prefer: "resolution=merge-duplicates",
+        },
+        body: JSON.stringify({
+          email: email_address.toLowerCase().trim(),
+          payfast_token: token,
+          is_default: true,
+          updated_at: new Date().toISOString(),
+        }),
+      });
+      if (!tokenRes.ok) {
+        console.error("[ITN] Failed to save token:", await tokenRes.text());
+      } else {
+        console.log("[ITN] Token saved for " + email_address);
+      }
     }
 
     return res.status(200).send("OK");

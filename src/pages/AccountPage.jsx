@@ -125,14 +125,11 @@ export default function AccountPage() {
     const metadataLastName = metadataFullName.split(" ").slice(1).join(" ") || "";
 
     const baseProfile = {
-      ...emptyProfile,
       email,
       username: seedProfile?.username?.trim() || email.split("@")[0],
       first_name: seedProfile?.first_name?.trim() || metadataFirstName,
       last_name: seedProfile?.last_name?.trim() || metadataLastName,
       phone: seedProfile?.phone?.trim() || "",
-      gender: seedProfile?.gender?.trim() || "",
-      purchase_count: 0,
     };
 
     const { data: inserted, error: insertError } = await supabase

@@ -98,8 +98,12 @@ export default async function handler(req, res) {
       body: JSON.stringify({ amount: amountCents, item_name }),
     });
 
-    pfResult = await pfRes.json().catch(() => ({}));
+    const pfText = await pfRes.text().catch(() => "");
+    try { pfResult = JSON.parse(pfText); } catch { pfResult = { raw: pfText }; }
     chargeStatus = pfRes.ok ? "success" : "failed";
+    console.log("[CHARGE] PayFast status:", pfRes.status, "| url:", adhocUrl);
+    console.log("[CHARGE] PayFast response:", JSON.stringify(pfResult));
+    console.log("[CHARGE] headers sent:", JSON.stringify({ "merchant-id": merchantId, timestamp, version: "v1", signature }));
   } catch (err) {
     console.error("[CHARGE] PayFast API error:", err);
   }

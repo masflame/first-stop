@@ -61,9 +61,15 @@ export default async function handler(req, res) {
   try {
     const body = parseBody(req.body);
 
+    console.log("[ITN] raw body type:", typeof req.body);
+    console.log("[ITN] parsed fields:", Object.keys(body).join(", ") || "(empty)");
+
     const passphrase = process.env.PAYFAST_PASSPHRASE || "";
-    const expected = md5hex(buildSignatureString(body, passphrase));
+    const sigString = buildSignatureString(body, passphrase);
+    const expected = md5hex(sigString);
+    console.log("[ITN] sig check — received:", body.signature, "expected:", expected);
     if (!body.signature || expected !== body.signature) {
+      console.error("[ITN] Signature mismatch — sigstring:", sigString.slice(0, 200));
       return res.status(400).send("Invalid signature");
     }
 
@@ -72,11 +78,12 @@ export default async function handler(req, res) {
     console.log("[ITN] token:", token || "(none)", "| email:", email_address || "(none)", "| status:", payment_status);
     if (!m_payment_id) return res.status(400).send("Missing m_payment_id");
 
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const serviceKey = process.env.SUPABASE_SERVICE_KEY;
+
     const updatePayload = { status: resolveStatus(payment_status) };
     if (pf_payment_id) updatePayload.pf_payment_id = pf_payment_id;
 
-    const supabaseUrl = process.env.SUPABASE_URL;
-    const serviceKey = process.env.SUPABASE_SERVICE_KEY;
     const query = new URLSearchParams({ order_id: `eq.${m_payment_id}` });
     const response = await fetch(`${supabaseUrl}/rest/v1/Orders?${query.toString()}`, {
       method: "PATCH",
@@ -101,28 +108,28 @@ export default async function handler(req, res) {
       console.log(`[ITN] Order ${m_payment_id} -> ${updatePayload.status}`);
     }
 
-
-    // Save PayFast token for recurring/tokenized billing
-    if (payment_status === "COMPLETE" && token && email_address) {
+    // Save PayFast card token for future recurring/adhoc charges
+    if (token && email_address && payment_status === "COMPLETE") {
+      const email = email_address.toLowerCase().trim();
       const tokenRes = await fetch(`${supabaseUrl}/rest/v1/customer_payment_tokens`, {
         method: "POST",
         headers: {
           apikey: serviceKey,
           Authorization: `Bearer ${serviceKey}`,
           "Content-Type": "application/json",
-          Prefer: "resolution=merge-duplicates",
+          Prefer: "resolution=merge-duplicates,return=minimal",
         },
         body: JSON.stringify({
-          email: email_address.toLowerCase().trim(),
+          email,
           payfast_token: token,
           is_default: true,
-          updated_at: new Date().toISOString(),
         }),
       });
       if (!tokenRes.ok) {
-        console.error("[ITN] Failed to save token:", await tokenRes.text());
+        const err = await tokenRes.text().catch(() => "");
+        console.error("[ITN] Failed to save token:", err);
       } else {
-        console.log("[ITN] Token saved for " + email_address);
+        console.log(`[ITN] Token saved for ${email}`);
       }
     }
 

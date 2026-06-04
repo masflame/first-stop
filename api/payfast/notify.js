@@ -68,6 +68,8 @@ export default async function handler(req, res) {
     }
 
     const { payment_status, m_payment_id, pf_payment_id, token, email_address } = body;
+    console.log("[ITN] fields received:", Object.keys(body).join(", "));
+    console.log("[ITN] token:", token || "(none)", "| email:", email_address || "(none)", "| status:", payment_status);
     if (!m_payment_id) return res.status(400).send("Missing m_payment_id");
 
     const updatePayload = { status: resolveStatus(payment_status) };

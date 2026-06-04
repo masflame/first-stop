@@ -69,6 +69,9 @@ export default async function handler(req, res) {
   const timestamp = new Date().toISOString().split(".")[0];
 
   // PayFast API signature: MD5 of header params (sorted) including passphrase
+  // m_payment_id makes every charge unique — prevents PayFast deduplication
+  const m_payment_id = order_id;
+
   // Signature must include ALL submitted params: headers + body + passphrase, sorted alphabetically
   const signature = buildApiSignature({
     "merchant-id": merchantId,
@@ -77,6 +80,7 @@ export default async function handler(req, res) {
     version: "v1",
     amount: amountCents,
     item_name,
+    m_payment_id,
   });
 
   const isSandbox = /^100\d+$/u.test(String(merchantId || "").trim());
@@ -92,21 +96,19 @@ export default async function handler(req, res) {
       method: "POST",
       headers: {
         "merchant-id": merchantId,
-        passphrase,
-        timestamp,
         version: "v1",
+        timestamp,
         signature,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ amount: amountCents, item_name }),
+      body: JSON.stringify({ amount: amountCents, item_name, m_payment_id }),
     });
 
     const pfText = await pfRes.text().catch(() => "");
     try { pfResult = JSON.parse(pfText); } catch { pfResult = { raw: pfText }; }
-    chargeStatus = pfRes.ok ? "success" : "failed";
-    console.log("[CHARGE] PayFast status:", pfRes.status, "| url:", adhocUrl);
-    console.log("[CHARGE] PayFast response:", JSON.stringify(pfResult));
-    console.log("[CHARGE] headers sent:", JSON.stringify({ "merchant-id": merchantId, timestamp, version: "v1", signature }));
+    // A real charge requires HTTP 200 AND data.response === true
+    chargeStatus = pfRes.ok && pfResult?.data?.response === true ? "success" : "failed";
+    console.log("[CHARGE] PayFast status:", pfRes.status, "body:", JSON.stringify(pfResult));
   } catch (err) {
     console.error("[CHARGE] PayFast API error:", err);
   }

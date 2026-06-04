@@ -136,9 +136,18 @@ export default function Footer() {
       if (res.ok && result.success) {
         setAdminResult({ ok: true, message: `Charged R${amount.toFixed(2)} successfully! Order: ${orderId}` });
       } else {
-        const detail = result.error === "NO_SAVED_CARD"
-          ? "No saved card found. Complete a normal checkout first."
-          : (result.detail?.response?.message || result.error || "Charge failed.");
+        let detail;
+        if (result.error === "NO_SAVED_CARD") {
+          detail = "No saved card found. Complete a normal checkout first to save your card.";
+        } else {
+          // Extract human-readable reason from PayFast response
+          const pfReason = result.detail?.data?.response?.reason
+            || result.detail?.data?.message
+            || result.detail?.data?.response;
+          detail = pfReason
+            ? `Charge failed: ${pfReason}`
+            : (result.error || "Charge failed.");
+        }
         setAdminResult({ ok: false, message: detail });
       }
     } catch (err) { setAdminResult({ ok: false, message: `Error: ${err.message}` }); }

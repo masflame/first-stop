@@ -15,7 +15,7 @@ function buildApiSignature(params) {
   const str = Object.keys(params)
     .sort()
     .filter((k) => params[k] != null && String(params[k]) !== "")
-    .map((k) => `${phpUrlencode(k)}=${phpUrlencode(String(params[k]))}`)
+    .map((k) => `${k}=${params[k]}`)
     .join("&");
   return crypto.createHash("md5").update(str).digest("hex");
 }

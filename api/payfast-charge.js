@@ -15,7 +15,7 @@ function buildApiSignature(params) {
   const str = Object.keys(params)
     .sort()
     .filter((k) => params[k] != null && String(params[k]) !== "")
-    .map((k) => `${k}=${params[k]}`)
+    .map((k) => `${phpUrlencode(k)}=${phpUrlencode(String(params[k]))}`)
     .join("&");
   return crypto.createHash("md5").update(str).digest("hex");
 }
@@ -69,11 +69,14 @@ export default async function handler(req, res) {
   const timestamp = new Date().toISOString().split(".")[0];
 
   // PayFast API signature: MD5 of header params (sorted) including passphrase
+  // Signature must include ALL submitted params: headers + body + passphrase, sorted alphabetically
   const signature = buildApiSignature({
     "merchant-id": merchantId,
     passphrase,
     timestamp,
     version: "v1",
+    amount: amountCents,
+    item_name,
   });
 
   const isSandbox = /^100\d+$/u.test(String(merchantId || "").trim());

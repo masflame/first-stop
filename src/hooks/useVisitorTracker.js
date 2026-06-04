@@ -1,14 +1,12 @@
-import { useEffect, useRef, useCallback } from "react";
+﻿import { useEffect, useRef, useCallback } from "react";
 import { useLocation } from "react-router-dom";
 import { getVisitorId, getSessionId } from "../utils/fingerprint";
 
 const VISITOR_TABLE = "ShoeDistrict_Visitors";
 const supabaseUrl =
-  import.meta.env.VITE_STORAGE_PROJECT_URL ||
   import.meta.env.VITE_PROJECT_URL ||
   import.meta.env.VITE_SUPABASE_URL;
 const supabaseKey =
-  import.meta.env.VITE_STORAGE_PUBLISHABLE_KEY ||
   import.meta.env.VITE_PUBLISHABLE_KEY ||
   import.meta.env.VITE_SUPABASE_ANON_KEY;
 

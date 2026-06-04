@@ -83,7 +83,6 @@ export default async function handler(req, res) {
     const serviceKey = process.env.SUPABASE_SERVICE_KEY;
 
     const updatePayload = { status: resolveStatus(payment_status) };
-    if (pf_payment_id) updatePayload.pf_payment_id = pf_payment_id;
 
     const query = new URLSearchParams({ order_id: `eq.${m_payment_id}` });
     const response = await fetch(`${supabaseUrl}/rest/v1/Orders?${query.toString()}`, {
